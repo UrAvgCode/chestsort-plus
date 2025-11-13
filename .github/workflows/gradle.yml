@@ -1,0 +1,33 @@
+name: gradle build
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+    - uses: actions/checkout@v5
+    - name: setup java
+      uses: actions/setup-java@v5
+      with:
+        java-version: '21'
+        distribution: 'temurin'
+
+    - name: setup gradle
+      uses: gradle/actions/setup-gradle@v5
+
+    - name: build
+      run: ./gradlew build
+
+    - name: upload release apk
+      uses: actions/upload-artifact@v4
+      with:
+        name: build
+        path: build/libs/*.jar

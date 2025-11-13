@@ -1,0 +1,79 @@
+package com.uravgcode.chestsortplus.category;
+
+import org.bukkit.Material;
+
+import java.util.List;
+
+public final class Combat implements Category {
+
+    @Override
+    public List<Material> materials() {
+        return List.of(
+            Material.WOODEN_SWORD,
+            Material.STONE_SWORD,
+            Material.COPPER_SWORD,
+            Material.IRON_SWORD,
+            Material.GOLDEN_SWORD,
+            Material.DIAMOND_SWORD,
+            Material.NETHERITE_SWORD,
+            Material.WOODEN_AXE,
+            Material.STONE_AXE,
+            Material.COPPER_AXE,
+            Material.IRON_AXE,
+            Material.GOLDEN_AXE,
+            Material.DIAMOND_AXE,
+            Material.NETHERITE_AXE,
+            Material.TRIDENT,
+            Material.MACE,
+            Material.SHIELD,
+            Material.LEATHER_HELMET,
+            Material.LEATHER_CHESTPLATE,
+            Material.LEATHER_LEGGINGS,
+            Material.LEATHER_BOOTS,
+            Material.COPPER_HELMET,
+            Material.COPPER_CHESTPLATE,
+            Material.COPPER_LEGGINGS,
+            Material.COPPER_BOOTS,
+            Material.CHAINMAIL_HELMET,
+            Material.CHAINMAIL_CHESTPLATE,
+            Material.CHAINMAIL_LEGGINGS,
+            Material.CHAINMAIL_BOOTS,
+            Material.IRON_HELMET,
+            Material.IRON_CHESTPLATE,
+            Material.IRON_LEGGINGS,
+            Material.IRON_BOOTS,
+            Material.GOLDEN_HELMET,
+            Material.GOLDEN_CHESTPLATE,
+            Material.GOLDEN_LEGGINGS,
+            Material.GOLDEN_BOOTS,
+            Material.DIAMOND_HELMET,
+            Material.DIAMOND_CHESTPLATE,
+            Material.DIAMOND_LEGGINGS,
+            Material.DIAMOND_BOOTS,
+            Material.NETHERITE_HELMET,
+            Material.NETHERITE_CHESTPLATE,
+            Material.NETHERITE_LEGGINGS,
+            Material.NETHERITE_BOOTS,
+            Material.TURTLE_HELMET,
+            Material.LEATHER_HORSE_ARMOR,
+            Material.COPPER_HORSE_ARMOR,
+            Material.IRON_HORSE_ARMOR,
+            Material.GOLDEN_HORSE_ARMOR,
+            Material.DIAMOND_HORSE_ARMOR,
+            Material.WOLF_ARMOR,
+            Material.TOTEM_OF_UNDYING,
+            Material.TNT,
+            Material.END_CRYSTAL,
+            Material.SNOWBALL,
+            Material.EGG,
+            Material.BROWN_EGG,
+            Material.BLUE_EGG,
+            Material.WIND_CHARGE,
+            Material.BOW,
+            Material.CROSSBOW,
+            Material.ARROW,
+            Material.SPECTRAL_ARROW,
+            Material.TIPPED_ARROW
+        );
+    }
+}
