@@ -19,7 +19,7 @@ paperPluginYaml {
     main = "com.uravgcode.chestsortplus.ChestSortPlus"
     bootstrapper = "com.uravgcode.chestsortplus.ChestSortPlusBootstrap"
     foliaSupported = true
-    apiVersion = "1.21.10"
+    apiVersion = "1.21.11"
 
     name = "chestsort-plus"
     description = "a modern lightweight chestsort plugin"
@@ -34,6 +34,6 @@ tasks {
     }
 
     runServer {
-        minecraftVersion("1.21.10")
+        minecraftVersion("1.21.11")
     }
 }
