@@ -9,6 +9,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryType;
 
 public final class InventoryListener implements Listener {
     private final InventorySorter inventorySorter;
@@ -32,7 +33,11 @@ public final class InventoryListener implements Listener {
 
         switch (inventory.getType()) {
             case PLAYER -> {
-                inventorySorter.sortInventory(inventory, 9, 35);
+                if (event.getSlotType() == InventoryType.SlotType.QUICKBAR) {
+                    inventorySorter.sortInventory(inventory, 0, 8);
+                } else {
+                    inventorySorter.sortInventory(inventory, 9, 35);
+                }
                 event.setCancelled(true);
             }
             case ENDER_CHEST, SHULKER_BOX, BARREL, DROPPER, DISPENSER, HOPPER -> {
