@@ -17,16 +17,16 @@ public final class ItemComparator implements Comparator<ItemStack> {
         this.order = new EnumMap<>(Material.class);
 
         final var categories = List.of(
+            new Combat(),
+            new ToolsAndUtilities(),
+            new FoodAndDrinks(),
+            new Ingredients(),
+            new SpawnEggs(),
             new BuildingBlocks(),
             new ColoredBlocks(),
             new NaturalBlocks(),
             new FunctionalBlocks(),
             new RedstoneBlocks(),
-            new ToolsAndUtilities(),
-            new Combat(),
-            new FoodAndDrinks(),
-            new Ingredients(),
-            new SpawnEggs(),
             new OpBlocks()
         );
 
