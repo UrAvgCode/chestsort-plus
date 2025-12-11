@@ -20,6 +20,7 @@ public final class InventoryListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onInventoryClick(InventoryClickEvent event) {
+        if (!event.getWhoClicked().hasPermission("chestsort.use")) return;
         if (event.getClick() != ClickType.SHIFT_LEFT) return;
 
         final var clickedItem = event.getCurrentItem();
