@@ -3,6 +3,7 @@ package com.uravgcode.chestsortplus;
 import com.uravgcode.chestsortplus.comparator.MaterialComparator;
 import com.uravgcode.chestsortplus.listener.InventoryListener;
 import com.uravgcode.chestsortplus.update.ConfigUpdater;
+import com.uravgcode.chestsortplus.update.UpdateChecker;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
@@ -30,6 +31,7 @@ public final class ChestSortPlus extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        new UpdateChecker(this).checkForUpdate();
         final var pluginManager = getServer().getPluginManager();
         pluginManager.registerEvents(new InventoryListener(), this);
         reload();
