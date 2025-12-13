@@ -3,6 +3,7 @@ package com.uravgcode.chestsortplus.comparator;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
+import org.bukkit.inventory.meta.OminousBottleMeta;
 import org.bukkit.inventory.meta.PotionMeta;
 
 import java.util.Comparator;
@@ -31,6 +32,13 @@ public final class ItemComparator implements Comparator<ItemStack> {
         if (o1.getItemMeta() instanceof PotionMeta meta1 && o2.getItemMeta() instanceof PotionMeta meta2) {
             final var potionOrder = potionComparator.compare(meta1.getBasePotionType(), meta2.getBasePotionType());
             if (potionOrder != 0) return potionOrder;
+        }
+
+        if (o1.getItemMeta() instanceof OminousBottleMeta meta1 && o2.getItemMeta() instanceof OminousBottleMeta meta2) {
+            final var amplifier1 = meta1.hasAmplifier() ? meta1.getAmplifier() : 0;
+            final var amplifier2 = meta2.hasAmplifier() ? meta2.getAmplifier() : 0;
+            final var ominousOrder = Integer.compare(amplifier1, amplifier2);
+            if (ominousOrder != 0) return ominousOrder;
         }
 
         final var serializer = PlainTextComponentSerializer.plainText();
