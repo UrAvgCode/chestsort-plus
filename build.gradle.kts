@@ -27,6 +27,10 @@ paperPluginYaml {
     authors.add("UrAvgCode")
 }
 
+runPaper {
+    folia.registerTask()
+}
+
 tasks {
     withType<JavaCompile>().configureEach {
         options.encoding = "UTF-8"
