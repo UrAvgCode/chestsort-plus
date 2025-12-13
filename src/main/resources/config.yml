@@ -2,6 +2,10 @@
 # Chestsort+ Plugin Configuration
 # ===============================
 
+config:
+  # current plugin version, do not change this
+  version: ${version}
+
 categories:
   - combat
   - tools_and_utilities

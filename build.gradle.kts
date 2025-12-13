@@ -37,6 +37,15 @@ tasks {
         options.release.set(21)
     }
 
+    processResources {
+        val props = mapOf("version" to project.version)
+        inputs.properties(props)
+        filteringCharset = "UTF-8"
+        filesMatching("config.yml") {
+            expand(props)
+        }
+    }
+
     runServer {
         minecraftVersion("1.21.11")
     }
