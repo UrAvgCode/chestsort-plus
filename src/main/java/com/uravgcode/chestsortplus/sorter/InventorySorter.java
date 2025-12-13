@@ -1,5 +1,6 @@
 package com.uravgcode.chestsortplus.sorter;
 
+import com.uravgcode.chestsortplus.comparator.ItemComparator;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;

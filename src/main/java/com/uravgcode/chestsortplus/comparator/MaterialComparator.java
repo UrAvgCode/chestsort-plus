@@ -1,4 +1,4 @@
-package com.uravgcode.chestsortplus.order;
+package com.uravgcode.chestsortplus.comparator;
 
 import com.uravgcode.chestsortplus.ChestSortPlus;
 import org.bukkit.Material;
@@ -6,13 +6,14 @@ import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Comparator;
 import java.util.EnumMap;
 import java.util.Map;
 
-public class MaterialOrder {
+public class MaterialComparator implements Comparator<Material> {
     private final Map<Material, Integer> order;
 
-    public MaterialOrder() {
+    public MaterialComparator() {
         this.order = new EnumMap<>(Material.class);
 
         final var plugin = ChestSortPlus.instance();
@@ -40,7 +41,10 @@ public class MaterialOrder {
         }
     }
 
-    public int getOrder(Material material) {
-        return order.getOrDefault(material, Integer.MAX_VALUE);
+    @Override
+    public int compare(Material o1, Material o2) {
+        final var order1 = order.getOrDefault(o1, Integer.MAX_VALUE);
+        final var order2 = order.getOrDefault(o2, Integer.MAX_VALUE);
+        return Integer.compare(order1, order2);
     }
 }
