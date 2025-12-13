@@ -38,7 +38,11 @@ public final class InventorySorter {
             items.add(item);
         }
 
-        items.sort(comparator);
+        try {
+            items.sort(comparator);
+        } catch (final Exception exception) {
+            exception.printStackTrace();
+        }
 
         int currentSlot = startSlot;
         for (final var item : items) {
