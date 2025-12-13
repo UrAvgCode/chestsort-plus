@@ -1,13 +1,15 @@
 package com.uravgcode.chestsortplus.comparator;
 
 import org.bukkit.potion.PotionType;
+import org.jspecify.annotations.NullMarked;
 
 import java.util.Comparator;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 
-public class PotionComparator implements Comparator<PotionType> {
+@NullMarked
+public final class PotionComparator implements Comparator<PotionType> {
     private final Map<PotionType, Integer> order;
 
     public PotionComparator() {

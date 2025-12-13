@@ -1,13 +1,15 @@
 package com.uravgcode.chestsortplus.comparator;
 
 import org.bukkit.MusicInstrument;
+import org.jspecify.annotations.NullMarked;
 
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class InstrumentComparator implements Comparator<MusicInstrument> {
+@NullMarked
+public final class InstrumentComparator implements Comparator<MusicInstrument> {
     private final Map<MusicInstrument, Integer> order;
 
     public InstrumentComparator() {

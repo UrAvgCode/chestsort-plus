@@ -1,11 +1,13 @@
 package com.uravgcode.chestsortplus.comparator;
 
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
+import org.jspecify.annotations.NullMarked;
 
 import java.util.Comparator;
 import java.util.List;
 
-public class EnchantmentComparator implements Comparator<EnchantmentStorageMeta> {
+@NullMarked
+public final class EnchantmentComparator implements Comparator<EnchantmentStorageMeta> {
 
     @Override
     public int compare(EnchantmentStorageMeta o1, EnchantmentStorageMeta o2) {

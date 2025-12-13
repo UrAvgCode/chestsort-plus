@@ -3,6 +3,7 @@ package com.uravgcode.chestsortplus.comparator;
 import com.uravgcode.chestsortplus.ChestSortPlus;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.jspecify.annotations.NullMarked;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -10,7 +11,8 @@ import java.util.Comparator;
 import java.util.EnumMap;
 import java.util.Map;
 
-public class MaterialComparator implements Comparator<Material> {
+@NullMarked
+public final class MaterialComparator implements Comparator<Material> {
     private final Map<Material, Integer> order;
 
     public MaterialComparator() {

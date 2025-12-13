@@ -3,9 +3,11 @@ package com.uravgcode.chestsortplus.comparator;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.*;
+import org.jspecify.annotations.NullMarked;
 
 import java.util.Comparator;
 
+@NullMarked
 public final class ItemComparator implements Comparator<ItemStack> {
     private final MaterialComparator materialComparator;
     private final EnchantmentComparator enchantmentComparator;

@@ -5,11 +5,12 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
 
 import java.util.ArrayList;
 import java.util.Comparator;
 
+@NullMarked
 public final class InventorySorter {
     private final Comparator<ItemStack> comparator;
 
@@ -17,11 +18,11 @@ public final class InventorySorter {
         this.comparator = new ItemComparator();
     }
 
-    public void sortInventory(@NotNull Inventory inventory) {
+    public void sortInventory(Inventory inventory) {
         sortInventory(inventory, 0, inventory.getSize() - 1);
     }
 
-    public void sortInventory(@NotNull Inventory inventory, int startSlot, int endSlot) {
+    public void sortInventory(Inventory inventory, int startSlot, int endSlot) {
         final var contents = inventory.getContents();
         final var combined = Bukkit.getServer().createInventory(null, 54);
 
