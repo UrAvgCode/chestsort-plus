@@ -1,0 +1,16 @@
+# ===============================
+# Chestsort+ Plugin Configuration
+# ===============================
+
+categories:
+  - combat
+  - tools_and_utilities
+  - food_and_drinks
+  - ingredients
+  - spawn_eggs
+  - building_blocks
+  - colored_blocks
+  - natural_blocks
+  - functional_blocks
+  - redstone_blocks
+  - op_blocks

@@ -1,0 +1,17 @@
+# ===============================
+# Op Blocks
+# ===============================
+
+materials:
+  - COMMAND_BLOCK
+  - CHAIN_COMMAND_BLOCK
+  - REPEATING_COMMAND_BLOCK
+  - COMMAND_BLOCK_MINECART
+  - JIGSAW
+  - STRUCTURE_BLOCK
+  - STRUCTURE_VOID
+  - BARRIER
+  - DEBUG_STICK
+  - TEST_INSTANCE_BLOCK
+  - TEST_BLOCK
+  - LIGHT

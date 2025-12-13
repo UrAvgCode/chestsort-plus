@@ -1,0 +1,25 @@
+# ===============================
+# Redstone Blocks
+# ===============================
+
+materials:
+  - REDSTONE
+  - REDSTONE_TORCH
+  - REDSTONE_BLOCK
+  - REPEATER
+  - COMPARATOR
+  - TARGET
+  - LEVER
+  - CALIBRATED_SCULK_SENSOR
+  - TRIPWIRE_HOOK
+  - DAYLIGHT_DETECTOR
+  - PISTON
+  - STICKY_PISTON
+  - DISPENSER
+  - DROPPER
+  - CRAFTER
+  - HOPPER
+  - TRAPPED_CHEST
+  - OBSERVER
+  - TNT
+  - REDSTONE_LAMP

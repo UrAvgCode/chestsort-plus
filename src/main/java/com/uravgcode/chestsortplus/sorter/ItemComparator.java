@@ -1,47 +1,22 @@
 package com.uravgcode.chestsortplus.sorter;
 
-import com.uravgcode.chestsortplus.category.*;
+import com.uravgcode.chestsortplus.order.MaterialOrder;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
-import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.Comparator;
-import java.util.EnumMap;
-import java.util.List;
-import java.util.Map;
 
 public final class ItemComparator implements Comparator<ItemStack> {
-    private final Map<Material, Integer> order;
+    private final MaterialOrder materialOrder;
 
     public ItemComparator() {
-        this.order = new EnumMap<>(Material.class);
-
-        final var categories = List.of(
-            new Combat(),
-            new ToolsAndUtilities(),
-            new FoodAndDrinks(),
-            new Ingredients(),
-            new SpawnEggs(),
-            new BuildingBlocks(),
-            new ColoredBlocks(),
-            new NaturalBlocks(),
-            new FunctionalBlocks(),
-            new RedstoneBlocks(),
-            new OpBlocks()
-        );
-
-        int weight = 0;
-        for (final var category : categories) {
-            for (final var material : category.materials()) {
-                order.put(material, weight++);
-            }
-        }
+        this.materialOrder = new MaterialOrder();
     }
 
     @Override
     public int compare(ItemStack o1, ItemStack o2) {
-        final var order1 = order.getOrDefault(o1.getType(), Integer.MAX_VALUE);
-        final var order2 = order.getOrDefault(o2.getType(), Integer.MAX_VALUE);
+        final var order1 = materialOrder.getOrder(o1.getType());
+        final var order2 = materialOrder.getOrder(o2.getType());
 
         final var compareOrder = Integer.compare(order1, order2);
         if (compareOrder != 0) return compareOrder;
