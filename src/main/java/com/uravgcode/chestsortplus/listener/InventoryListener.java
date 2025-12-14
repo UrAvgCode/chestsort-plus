@@ -1,8 +1,8 @@
 package com.uravgcode.chestsortplus.listener;
 
+import com.uravgcode.chestsortplus.key.ChestSortKeys;
 import com.uravgcode.chestsortplus.sorter.InventorySorter;
 import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
 import org.bukkit.entity.ChestedHorse;
 import org.bukkit.entity.Llama;
 import org.bukkit.event.EventHandler;
@@ -16,7 +16,6 @@ import org.jspecify.annotations.NullMarked;
 
 @NullMarked
 public final class InventoryListener implements Listener {
-    private static final NamespacedKey key = new NamespacedKey("chestsort-plus", "chestsort");
     private final InventorySorter inventorySorter;
 
     public InventoryListener() {
@@ -27,8 +26,12 @@ public final class InventoryListener implements Listener {
     public void onInventoryClick(InventoryClickEvent event) {
         final var player = event.getWhoClicked();
         if (!player.hasPermission("chestsort.use")) return;
-        if (!player.getPersistentDataContainer().getOrDefault(key, PersistentDataType.BOOLEAN, false)) return;
-        if (event.getClick() != ClickType.SHIFT_LEFT) return;
+
+        final var dataContainer = player.getPersistentDataContainer();
+        if (!dataContainer.getOrDefault(ChestSortKeys.ENABLED, PersistentDataType.BOOLEAN, false)) return;
+
+        final var keybind = ClickType.valueOf(dataContainer.getOrDefault(ChestSortKeys.KEYBIND, PersistentDataType.STRING, "SHIFT_LEFT"));
+        if (event.getClick() != keybind) return;
 
         final var clickedItem = event.getCurrentItem();
         if (clickedItem != null && clickedItem.getType() != Material.AIR) return;

@@ -1,5 +1,6 @@
 package com.uravgcode.chestsortplus.dialog;
 
+import com.uravgcode.chestsortplus.key.ChestSortKeys;
 import io.papermc.paper.dialog.Dialog;
 import io.papermc.paper.dialog.DialogResponseView;
 import io.papermc.paper.registry.data.dialog.ActionButton;
@@ -12,8 +13,8 @@ import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickCallback;
 import net.kyori.adventure.text.format.NamedTextColor;
-import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.ClickType;
 import org.bukkit.persistence.PersistentDataType;
 import org.jspecify.annotations.NullMarked;
 
@@ -22,7 +23,6 @@ import java.util.List;
 @NullMarked
 @SuppressWarnings("UnstableApiUsage")
 public final class SettingsDialog {
-    private static final NamespacedKey key = new NamespacedKey("chestsort-plus", "chestsort");
     private final Player player;
 
     public SettingsDialog(Player player) {
@@ -32,7 +32,10 @@ public final class SettingsDialog {
     public Dialog create() {
         return Dialog.create(builder -> builder.empty()
             .base(DialogBase.builder(Component.text("Chestsort Settings"))
-                .inputs(generateDialogInputs())
+                .inputs(List.of(
+                    enableDialogInput(),
+                    keybindDialogInput()
+                ))
                 .build()
             )
             .type(DialogType.confirmation(
@@ -47,11 +50,15 @@ public final class SettingsDialog {
         );
     }
 
-    private List<DialogInput> generateDialogInputs() {
+    private DialogInput enableDialogInput() {
         final var dataContainer = player.getPersistentDataContainer();
-        final var enabled = dataContainer.getOrDefault(key, PersistentDataType.BOOLEAN, false);
+        final var enabled = dataContainer.getOrDefault(
+            ChestSortKeys.ENABLED,
+            PersistentDataType.BOOLEAN,
+            false
+        );
 
-        final var enableDialogInput = DialogInput.singleOption(
+        return DialogInput.singleOption(
             "chestsort",
             200,
             List.of(
@@ -69,15 +76,42 @@ public final class SettingsDialog {
             Component.text("chestsort"),
             true
         );
+    }
 
-        return List.of(enableDialogInput);
+    private DialogInput keybindDialogInput() {
+        final var dataContainer = player.getPersistentDataContainer();
+        final var keybind = dataContainer.getOrDefault(
+            ChestSortKeys.KEYBIND,
+            PersistentDataType.STRING,
+            "SHIFT_LEFT"
+        );
+
+        return DialogInput.singleOption(
+            "keybind",
+            200,
+            List.of(
+                SingleOptionDialogInput.OptionEntry.create(
+                    "SHIFT_LEFT",
+                    Component.text("shift-left", NamedTextColor.GREEN),
+                    keybind.equals("SHIFT_LEFT")
+                ),
+                SingleOptionDialogInput.OptionEntry.create(
+                    "SHIFT_RIGHT",
+                    Component.text("shift-right", NamedTextColor.RED),
+                    keybind.equals("SHIFT_RIGHT")
+                )
+            ),
+            Component.text("keybind"),
+            true
+        );
     }
 
     private void updateSettings(DialogResponseView response, Audience audience) {
-        final var responseText = response.getText("chestsort");
-        final var enabled = "enabled".equals(responseText);
+        final var enabled = "enabled".equals(response.getText("chestsort"));
+        final var keybind = ClickType.valueOf(response.getText("keybind"));
 
         final var dataContainer = player.getPersistentDataContainer();
-        dataContainer.set(key, PersistentDataType.BOOLEAN, enabled);
+        dataContainer.set(ChestSortKeys.ENABLED, PersistentDataType.BOOLEAN, enabled);
+        dataContainer.set(ChestSortKeys.KEYBIND, PersistentDataType.STRING, keybind.name());
     }
 }
