@@ -15,7 +15,7 @@ public final class InstrumentComparator implements Comparator<MusicInstrument> {
     public InstrumentComparator() {
         this.order = new HashMap<>();
 
-        final var potionTypes = List.of(
+        final var instruments = List.of(
             MusicInstrument.PONDER_GOAT_HORN,
             MusicInstrument.SING_GOAT_HORN,
             MusicInstrument.SEEK_GOAT_HORN,
@@ -27,8 +27,8 @@ public final class InstrumentComparator implements Comparator<MusicInstrument> {
         );
 
         int weight = 0;
-        for (final var type : potionTypes) {
-            order.put(type, weight++);
+        for (final var instrument : instruments) {
+            order.put(instrument, weight++);
         }
     }
 
