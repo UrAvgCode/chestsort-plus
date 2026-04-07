@@ -8,7 +8,7 @@ group = "com.uravgcode"
 version = "0.2.0"
 
 java {
-    toolchain.languageVersion.set(JavaLanguageVersion.of(21))
+    toolchain.languageVersion.set(JavaLanguageVersion.of(25))
 }
 
 dependencies {
@@ -19,7 +19,7 @@ paperPluginYaml {
     main = "com.uravgcode.chestsortplus.ChestSortPlus"
     bootstrapper = "com.uravgcode.chestsortplus.ChestSortPlusBootstrap"
     foliaSupported = true
-    apiVersion = "1.21.11"
+    apiVersion = "26.1"
 
     name = "chestsort-plus"
     description = "a modern lightweight chestsort plugin"
@@ -34,7 +34,7 @@ runPaper {
 tasks {
     withType<JavaCompile>().configureEach {
         options.encoding = "UTF-8"
-        options.release.set(21)
+        options.release.set(25)
     }
 
     processResources {
@@ -47,6 +47,6 @@ tasks {
     }
 
     runServer {
-        minecraftVersion("1.21.11")
+        minecraftVersion("26.1.1")
     }
 }
