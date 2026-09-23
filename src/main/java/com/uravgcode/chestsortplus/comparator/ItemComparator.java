@@ -10,7 +10,6 @@ import org.jspecify.annotations.NullMarked;
 import java.util.Comparator;
 
 @NullMarked
-@SuppressWarnings("UnstableApiUsage")
 public final class ItemComparator implements Comparator<ItemStack> {
     private final MaterialComparator materialComparator;
     private final EnchantmentComparator enchantmentComparator;

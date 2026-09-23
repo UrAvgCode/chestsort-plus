@@ -8,9 +8,7 @@ import org.bukkit.entity.Llama;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.inventory.ClickType;
-import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.event.inventory.*;
 import org.bukkit.persistence.PersistentDataType;
 import org.jspecify.annotations.NullMarked;
 
@@ -58,11 +56,52 @@ public final class InventoryListener implements Listener {
             case CHEST -> {
                 switch (holder) {
                     case Llama llama -> inventorySorter.sortInventory(inventory, 2, llama.getStrength() * 3 + 1);
-                    case ChestedHorse ignored -> inventorySorter.sortInventory(inventory, 2, 16);
+                    case ChestedHorse _ -> inventorySorter.sortInventory(inventory, 2, 16);
                     default -> inventorySorter.sortInventory(inventory);
                 }
                 event.setCancelled(true);
             }
         }
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    public void onInventoryOpen(InventoryOpenEvent event) {
+        final var player = event.getPlayer();
+        if (!player.hasPermission("chestsort.use")) return;
+
+        final var inventory = event.getInventory();
+        final var holder = inventory.getHolder();
+        if (holder == null) return;
+
+        final var dataContainer = player.getPersistentDataContainer();
+        if (!dataContainer.getOrDefault(ChestSortKeys.ENABLED, PersistentDataType.BOOLEAN, false)) return;
+        if (!dataContainer.getOrDefault(ChestSortKeys.AUTO_CHEST, PersistentDataType.BOOLEAN, false)) return;
+
+        switch (inventory.getType()) {
+            case ENDER_CHEST, SHULKER_BOX, BARREL, DROPPER, DISPENSER, HOPPER -> inventorySorter.sortInventory(inventory);
+            case CHEST -> {
+                switch (holder) {
+                    case Llama llama -> inventorySorter.sortInventory(inventory, 2, llama.getStrength() * 3 + 1);
+                    case ChestedHorse _ -> inventorySorter.sortInventory(inventory, 2, 16);
+                    default -> inventorySorter.sortInventory(inventory);
+                }
+            }
+        }
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    public void onInventoryClose(InventoryCloseEvent event) {
+        final var player = event.getPlayer();
+        if (!player.hasPermission("chestsort.use")) return;
+
+        final var inventory = event.getInventory();
+        final var holder = inventory.getHolder();
+        if (inventory.getType() != InventoryType.CRAFTING || holder != player) return;
+
+        final var dataContainer = player.getPersistentDataContainer();
+        if (!dataContainer.getOrDefault(ChestSortKeys.ENABLED, PersistentDataType.BOOLEAN, false)) return;
+        if (!dataContainer.getOrDefault(ChestSortKeys.AUTO_INVENTORY, PersistentDataType.BOOLEAN, false)) return;
+
+        inventorySorter.sortInventory(player.getInventory(), 9, 35);
     }
 }

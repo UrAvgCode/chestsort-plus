@@ -21,7 +21,6 @@ import org.jspecify.annotations.NullMarked;
 import java.util.List;
 
 @NullMarked
-@SuppressWarnings("UnstableApiUsage")
 public final class SettingsDialog {
     private final Player player;
 
@@ -34,7 +33,9 @@ public final class SettingsDialog {
             .base(DialogBase.builder(Component.text("Chestsort Settings"))
                 .inputs(List.of(
                     enableDialogInput(),
-                    keybindDialogInput()
+                    keybindDialogInput(),
+                    autoChestDialogInput(),
+                    autoInventoryDialogInput()
                 ))
                 .build()
             )
@@ -106,12 +107,72 @@ public final class SettingsDialog {
         );
     }
 
+    private DialogInput autoChestDialogInput() {
+        final var dataContainer = player.getPersistentDataContainer();
+        final var autoChest = dataContainer.getOrDefault(
+            ChestSortKeys.AUTO_CHEST,
+            PersistentDataType.BOOLEAN,
+            false
+        );
+
+        return DialogInput.singleOption(
+            "auto_chest",
+            200,
+            List.of(
+                SingleOptionDialogInput.OptionEntry.create(
+                    "enabled",
+                    Component.text("enabled", NamedTextColor.GREEN),
+                    autoChest
+                ),
+                SingleOptionDialogInput.OptionEntry.create(
+                    "disabled",
+                    Component.text("disabled", NamedTextColor.RED),
+                    !autoChest
+                )
+            ),
+            Component.text("auto-sort chests"),
+            true
+        );
+    }
+
+    private DialogInput autoInventoryDialogInput() {
+        final var dataContainer = player.getPersistentDataContainer();
+        final var autoInventory = dataContainer.getOrDefault(
+            ChestSortKeys.AUTO_INVENTORY,
+            PersistentDataType.BOOLEAN,
+            false
+        );
+
+        return DialogInput.singleOption(
+            "auto_inventory",
+            200,
+            List.of(
+                SingleOptionDialogInput.OptionEntry.create(
+                    "enabled",
+                    Component.text("enabled", NamedTextColor.GREEN),
+                    autoInventory
+                ),
+                SingleOptionDialogInput.OptionEntry.create(
+                    "disabled",
+                    Component.text("disabled", NamedTextColor.RED),
+                    !autoInventory
+                )
+            ),
+            Component.text("auto-sort inventory"),
+            true
+        );
+    }
+
     private void updateSettings(DialogResponseView response, Audience audience) {
         final var enabled = "enabled".equals(response.getText("chestsort"));
         final var keybind = ClickType.valueOf(response.getText("keybind"));
+        final var autoChest = "enabled".equals(response.getText("auto_chest"));
+        final var autoInventory = "enabled".equals(response.getText("auto_inventory"));
 
         final var dataContainer = player.getPersistentDataContainer();
         dataContainer.set(ChestSortKeys.ENABLED, PersistentDataType.BOOLEAN, enabled);
         dataContainer.set(ChestSortKeys.KEYBIND, PersistentDataType.STRING, keybind.name());
+        dataContainer.set(ChestSortKeys.AUTO_CHEST, PersistentDataType.BOOLEAN, autoChest);
+        dataContainer.set(ChestSortKeys.AUTO_INVENTORY, PersistentDataType.BOOLEAN, autoInventory);
     }
 }
