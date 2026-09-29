@@ -1,7 +1,6 @@
 package com.uravgcode.chestsortplus;
 
 import com.uravgcode.chestsortplus.comparator.MaterialComparator;
-import com.uravgcode.chestsortplus.key.ChestSortKeys;
 import com.uravgcode.chestsortplus.listener.InventoryListener;
 import com.uravgcode.chestsortplus.update.ConfigUpdater;
 import com.uravgcode.chestsortplus.update.UpdateChecker;
@@ -32,7 +31,6 @@ public final class ChestSortPlus extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        ChestSortKeys.init(this);
         new UpdateChecker(this).checkForUpdate();
         final var pluginManager = getServer().getPluginManager();
         pluginManager.registerEvents(new InventoryListener(), this);
