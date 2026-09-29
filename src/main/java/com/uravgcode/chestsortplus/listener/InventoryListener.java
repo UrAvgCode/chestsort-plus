@@ -2,7 +2,6 @@ package com.uravgcode.chestsortplus.listener;
 
 import com.uravgcode.chestsortplus.key.ChestSortKeys;
 import com.uravgcode.chestsortplus.sorter.InventorySorter;
-import org.bukkit.Material;
 import org.bukkit.entity.ChestedHorse;
 import org.bukkit.entity.Llama;
 import org.bukkit.event.EventHandler;
@@ -32,7 +31,7 @@ public final class InventoryListener implements Listener {
         if (event.getClick() != keybind) return;
 
         final var clickedItem = event.getCurrentItem();
-        if (clickedItem != null && clickedItem.getType() != Material.AIR) return;
+        if (clickedItem != null && clickedItem.getType().isAir()) return;
 
         final var inventory = event.getClickedInventory();
         if (inventory == null) return;
@@ -42,12 +41,16 @@ public final class InventoryListener implements Listener {
 
         switch (inventory.getType()) {
             case PLAYER -> {
-                if (event.getSlotType() == InventoryType.SlotType.QUICKBAR) {
-                    inventorySorter.sortInventory(inventory, 0, 8);
-                } else {
-                    inventorySorter.sortInventory(inventory, 9, 35);
+                switch (event.getSlotType()) {
+                    case CONTAINER -> {
+                        inventorySorter.sortInventory(inventory, 9, 35);
+                        event.setCancelled(true);
+                    }
+                    case QUICKBAR -> {
+                        inventorySorter.sortInventory(inventory, 0, 8);
+                        event.setCancelled(true);
+                    }
                 }
-                event.setCancelled(true);
             }
             case ENDER_CHEST, SHULKER_BOX, BARREL, DROPPER, DISPENSER, HOPPER -> {
                 inventorySorter.sortInventory(inventory);
