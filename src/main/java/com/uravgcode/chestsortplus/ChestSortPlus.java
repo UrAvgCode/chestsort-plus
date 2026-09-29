@@ -31,7 +31,7 @@ public final class ChestSortPlus extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        new UpdateChecker(this).checkForUpdate();
+        UpdateChecker.checkForUpdate(getComponentLogger());
         final var pluginManager = getServer().getPluginManager();
         pluginManager.registerEvents(new InventoryListener(), this);
         reload();

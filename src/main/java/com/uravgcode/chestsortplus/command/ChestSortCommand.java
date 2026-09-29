@@ -38,7 +38,7 @@ public final class ChestSortCommand {
 
     private int version(CommandContext<CommandSourceStack> context) {
         final var sender = context.getSource().getSender();
-        new UpdateChecker(ChestSortPlus.instance()).sendVersionInfo(sender);
+        UpdateChecker.sendVersionInfo(sender);
         return Command.SINGLE_SUCCESS;
     }
 

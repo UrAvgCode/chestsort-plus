@@ -1,14 +1,15 @@
 package com.uravgcode.chestsortplus.update;
 
 import com.google.gson.JsonParser;
+import com.uravgcode.chestsortplus.PluginInfo;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
+import net.kyori.adventure.text.logger.slf4j.ComponentLogger;
 import org.apache.maven.artifact.versioning.ComparableVersion;
-import org.bukkit.plugin.java.JavaPlugin;
 import org.jspecify.annotations.NullMarked;
 
 import java.net.URI;
@@ -20,28 +21,21 @@ import java.util.concurrent.CompletableFuture;
 
 @NullMarked
 public final class UpdateChecker {
-    private final JavaPlugin plugin;
-    private final HttpClient httpClient;
-    private final HttpRequest httpRequest;
+    private static final HttpClient httpClient = HttpClient.newBuilder()
+        .connectTimeout(Duration.ofSeconds(5))
+        .build();
 
-    public UpdateChecker(JavaPlugin plugin) {
-        this.plugin = plugin;
-        final var uri = URI.create("https://api.github.com/repos/UrAvgCode/chestsort-plus/releases/latest");
-        final var timeout = Duration.ofSeconds(5);
+    private static final HttpRequest httpRequest = HttpRequest.newBuilder()
+        .uri(URI.create("https://api.github.com/repos/UrAvgCode/chestsort-plus/releases/latest"))
+        .timeout(Duration.ofSeconds(5))
+        .header("Accept", "application/vnd.github+json")
+        .GET()
+        .build();
 
-        this.httpClient = HttpClient.newBuilder()
-            .connectTimeout(timeout)
-            .build();
-
-        this.httpRequest = HttpRequest.newBuilder()
-            .uri(uri)
-            .timeout(timeout)
-            .header("Accept", "application/vnd.github+json")
-            .GET()
-            .build();
+    private UpdateChecker() {
     }
 
-    public CompletableFuture<ComparableVersion> fetchLatestVersion() {
+    private static CompletableFuture<ComparableVersion> fetchLatestVersion() {
         return httpClient.sendAsync(httpRequest, HttpResponse.BodyHandlers.ofString())
             .thenApply(response -> {
                 final var json = JsonParser.parseString(response.body()).getAsJsonObject();
@@ -50,26 +44,25 @@ public final class UpdateChecker {
             });
     }
 
-    public void checkForUpdate() {
+    public static void checkForUpdate(ComponentLogger logger) {
         try {
-            final var logger = plugin.getComponentLogger();
-            final var version = new ComparableVersion(plugin.getPluginMeta().getVersion());
+            final var version = new ComparableVersion(PluginInfo.VERSION);
             final var latestVersion = fetchLatestVersion().get();
             if (latestVersion.compareTo(version) > 0) {
                 logger.info(Component.text("A new version is available: " + latestVersion, NamedTextColor.GREEN));
             }
-        } catch (Exception ignored) {
+        } catch (Exception _) {
         }
     }
 
-    public void sendVersionInfo(Audience audience) {
+    public static void sendVersionInfo(Audience audience) {
         audience.sendMessage(Component.text("Checking version, please wait...").decorate(TextDecoration.ITALIC));
 
-        final var version = new ComparableVersion(plugin.getPluginMeta().getVersion());
         fetchLatestVersion().thenAccept(latestVersion -> {
                 audience.sendMessage(Component.text("chestsort-plus version: ")
-                    .append(Component.text(version.toString(), NamedTextColor.GREEN)));
+                    .append(Component.text(PluginInfo.VERSION, NamedTextColor.GREEN)));
 
+                final var version = new ComparableVersion(PluginInfo.VERSION);
                 final var comparison = latestVersion.compareTo(version);
                 if (comparison == 0) {
                     audience.sendMessage(Component.text("You are running the latest version", NamedTextColor.GREEN));
@@ -87,9 +80,9 @@ public final class UpdateChecker {
                     audience.sendMessage(Component.text("You are running a newer version than the latest release", NamedTextColor.RED));
                 }
             })
-            .exceptionally(throwable -> {
+            .exceptionally(_ -> {
                 audience.sendMessage(Component.text("chestsort-plus version: ")
-                    .append(Component.text(version.toString(), NamedTextColor.GREEN)));
+                    .append(Component.text(PluginInfo.VERSION, NamedTextColor.GREEN)));
                 audience.sendMessage(Component.text("Failed to fetch latest version", NamedTextColor.RED));
                 return null;
             });

@@ -21,7 +21,6 @@ paperPluginYaml {
     foliaSupported = true
     apiVersion = "26.1"
 
-    name = "chestsort-plus"
     description = "a modern lightweight chestsort plugin"
     website = "https://uravgcode.com"
     authors.add("UrAvgCode")
@@ -31,18 +30,28 @@ runPaper {
     folia.registerTask()
 }
 
-tasks {
-    withType<JavaCompile>().configureEach {
-        options.encoding = "UTF-8"
-        options.release.set(25)
-    }
+val templateProperties = mapOf(
+    "name" to rootProject.name,
+    "version" to project.version,
+)
 
+val generateTemplates = tasks.register<Copy>("generateTemplates") {
+    from(layout.projectDirectory.dir("src/main/templates"))
+    into(layout.buildDirectory.dir("generated/sources/templates"))
+    expand(templateProperties)
+}
+
+sourceSets {
+    main {
+        java.srcDir(generateTemplates)
+    }
+}
+
+tasks {
     processResources {
-        val props = mapOf("version" to project.version)
-        inputs.properties(props)
         filteringCharset = "UTF-8"
         filesMatching("config.yml") {
-            expand(props)
+            expand(templateProperties)
         }
     }
 
