@@ -3,6 +3,10 @@
 Chestsort+ is a modern, lightweight PaperMC plugin that lets players sort chests, other containers, and their own
 inventory by shift-clicking an empty inventory slot.
 
+| Chest Sorting                            | Settings Dialog                         |
+|------------------------------------------|-----------------------------------------|
+| <img src="readme/sort.gif" height="240"> | <img src="readme/gui.png" height="240"> |
+
 ## Permission
 
 `chestsort.use` is required for players to use the sorting feature.
