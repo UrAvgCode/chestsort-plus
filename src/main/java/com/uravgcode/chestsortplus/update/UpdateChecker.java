@@ -73,7 +73,9 @@ public final class UpdateChecker {
                         .append(Component.text("Github", TextColor.color(0x59636e))
                             .clickEvent(ClickEvent.openUrl("https://github.com/UrAvgCode/chestsort-plus/releases")))
                         .append(Component.text(" Modrinth", TextColor.color(0x1bd96a))
-                            .clickEvent(ClickEvent.openUrl("https://modrinth.com/plugin/chestsort+/version/latest"))));
+                            .clickEvent(ClickEvent.openUrl("https://modrinth.com/plugin/chestsort-plus")))
+                        .append(Component.text(" Hangar", TextColor.color(0x2f4476))
+                            .clickEvent(ClickEvent.openUrl("https://hangar.papermc.io/UrAvgCode/chestsort"))));
                 } else {
                     audience.sendMessage(Component.text("Latest version: ")
                         .append(Component.text(latestVersion.toString(), NamedTextColor.GREEN)));

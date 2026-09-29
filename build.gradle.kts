@@ -36,6 +36,7 @@ val templateProperties = mapOf(
 )
 
 val generateTemplates = tasks.register<Copy>("generateTemplates") {
+    inputs.properties(templateProperties)
     from(layout.projectDirectory.dir("src/main/templates"))
     into(layout.buildDirectory.dir("generated/sources/templates"))
     expand(templateProperties)
