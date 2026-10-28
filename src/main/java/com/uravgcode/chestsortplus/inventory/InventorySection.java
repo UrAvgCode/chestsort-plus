@@ -1,9 +1,11 @@
 package com.uravgcode.chestsortplus.inventory;
 
 import org.bukkit.Material;
+import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 import java.util.HashMap;
 
@@ -23,14 +25,16 @@ public final class InventorySection {
         this.endSlot = endSlot;
     }
 
-    public boolean contains(Material material) {
-        for (int i = startSlot; i <= endSlot; ++i) {
-            final var item = inventory.getItem(i);
-            if (item != null && item.getType() == material) {
-                return true;
-            }
-        }
-        return false;
+    public int getSize() {
+        return endSlot - startSlot + 1;
+    }
+
+    public @Nullable ItemStack getItem(int index) {
+        return inventory.getItem(startSlot + index);
+    }
+
+    public void setItem(int index, @Nullable ItemStack item) {
+        inventory.setItem(startSlot + index, item);
     }
 
     public HashMap<Integer, ItemStack> addItem(ItemStack... items) {
@@ -81,6 +85,24 @@ public final class InventorySection {
         }
 
         return leftover;
+    }
+
+    public boolean contains(Material material) {
+        for (int i = startSlot; i <= endSlot; ++i) {
+            final var item = inventory.getItem(i);
+            if (item != null && item.getType() == material) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public void clear(int index) {
+        inventory.setItem(startSlot + index, null);
+    }
+
+    public InventoryType getType() {
+        return inventory.getType();
     }
 
     private int firstEmptySlot() {

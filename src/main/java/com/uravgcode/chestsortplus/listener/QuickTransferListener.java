@@ -11,7 +11,6 @@ import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jspecify.annotations.NullMarked;
 
@@ -48,74 +47,35 @@ public final class QuickTransferListener implements Listener {
         final var doubleClick = isDoubleClick(event);
         final var playerInventory = player.getInventory();
 
-        if (clickType == ClickType.LEFT) {
-            if (holder instanceof ChestedHorse) {
-                quickTransferToChestedHorse(playerInventory, containerInventory, doubleClick);
-            } else {
-                quickTransferPlayerInventory(playerInventory, containerInventory, doubleClick);
-            }
-        } else if (clickType == ClickType.RIGHT) {
-            quickTransferContainerInventory(containerInventory, playerInventory, doubleClick);
-        }
-    }
-
-    private void quickTransferPlayerInventory(PlayerInventory playerInventory, Inventory containerInventory, boolean doubleClick) {
-        final var isShulkerBox = containerInventory.getType() == InventoryType.SHULKER_BOX;
-        for (int i = 9; i <= 35; ++i) {
-            final var item = playerInventory.getItem(i);
-            if (item == null || item.isEmpty()) continue;
-            if (isShulkerBox && Tag.SHULKER_BOXES.isTagged(item.getType())) continue;
-            if (!doubleClick && !containerInventory.contains(item.getType())) continue;
-
-            final var remainingItems = containerInventory.addItem(item.clone());
-
-            if (remainingItems.isEmpty()) {
-                playerInventory.clear(i);
-            } else {
-                playerInventory.setItem(i, remainingItems.get(0));
-            }
-        }
-    }
-
-    private void quickTransferToChestedHorse(PlayerInventory player, Inventory horseInventory, boolean doubleClick) {
-        final int endSlot = horseInventory.getHolder() instanceof Llama llama ? llama.getStrength() * 3 + 1 : 16;
-        final var inventorySection = new InventorySection(horseInventory, 2, endSlot);
-
-        for (int i = 9; i <= 35; ++i) {
-            final var item = player.getItem(i);
-            if (item == null || item.getType().isAir()) continue;
-            if (!doubleClick && !inventorySection.contains(item.getType())) continue;
-
-            final var remainingItems = inventorySection.addItem(item.clone());
-
-            if (remainingItems.isEmpty()) {
-                player.clear(i);
-            } else {
-                player.setItem(i, remainingItems.get(0));
-            }
-        }
-    }
-
-    private void quickTransferContainerInventory(Inventory containerInventory, PlayerInventory playerInventory, boolean doubleClick) {
-        final var holder = containerInventory.getHolder();
-        final var startSlot = holder instanceof ChestedHorse ? 2 : 0;
-        final var endSlot = switch (holder) {
-            case Llama llama -> llama.getStrength() * 3 + 1;
-            case ChestedHorse _ -> 16;
-            case null, default -> containerInventory.getSize() - 1;
+        final var playerInventorySection = new InventorySection(playerInventory, 9, 35);
+        final var containerInventorySection = switch (holder) {
+            case Llama llama -> new InventorySection(containerInventory, 2, llama.getStrength() * 3 + 1);
+            case ChestedHorse _ -> new InventorySection(containerInventory, 2, 16);
+            default -> new InventorySection(containerInventory, 0, containerInventory.getSize() - 1);
         };
 
-        for (int i = startSlot; i <= endSlot; ++i) {
-            final var item = containerInventory.getItem(i);
-            if (item == null || item.getType().isAir()) continue;
-            if (!doubleClick && !playerInventory.contains(item.getType())) continue;
+        if (clickType == ClickType.LEFT) {
+            quickTransferInventory(playerInventorySection, containerInventorySection, doubleClick);
+        } else if (clickType == ClickType.RIGHT) {
+            quickTransferInventory(containerInventorySection, playerInventorySection, doubleClick);
+        }
+    }
 
-            final var remainingItems = playerInventory.addItem(item.clone());
+    private void quickTransferInventory(InventorySection source, InventorySection target, boolean doubleClick) {
+        final boolean isShulkerBox = target.getType() == InventoryType.SHULKER_BOX;
+
+        for (int i = 0; i < source.getSize(); ++i) {
+            final var item = source.getItem(i);
+            if (item == null || item.isEmpty()) continue;
+            if (isShulkerBox && Tag.SHULKER_BOXES.isTagged(item.getType())) continue;
+            if (!doubleClick && !target.contains(item.getType())) continue;
+
+            final var remainingItems = target.addItem(item.clone());
 
             if (remainingItems.isEmpty()) {
-                containerInventory.clear(i);
+                source.clear(i);
             } else {
-                containerInventory.setItem(i, remainingItems.get(0));
+                source.setItem(i, remainingItems.get(0));
             }
         }
     }
