@@ -1,6 +1,7 @@
 package com.uravgcode.chestsortplus;
 
 import com.uravgcode.chestsortplus.comparator.MaterialComparator;
+import com.uravgcode.chestsortplus.listener.DoubleClickListener;
 import com.uravgcode.chestsortplus.listener.InventoryListener;
 import com.uravgcode.chestsortplus.listener.QuickTransferListener;
 import com.uravgcode.chestsortplus.update.ConfigUpdater;
@@ -34,8 +35,10 @@ public final class ChestSortPlus extends JavaPlugin {
     public void onEnable() {
         UpdateChecker.checkForUpdate(getComponentLogger());
         final var pluginManager = getServer().getPluginManager();
+        final var doubleClickListener = new DoubleClickListener();
+        pluginManager.registerEvents(doubleClickListener, this);
         pluginManager.registerEvents(new InventoryListener(), this);
-        pluginManager.registerEvents(new QuickTransferListener(this), this);
+        pluginManager.registerEvents(new QuickTransferListener(doubleClickListener), this);
         reload();
     }
 

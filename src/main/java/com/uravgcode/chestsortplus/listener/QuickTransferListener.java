@@ -11,22 +11,14 @@ import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
-import org.bukkit.plugin.java.JavaPlugin;
 import org.jspecify.annotations.NullMarked;
-
-import java.util.Map;
-import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.TimeUnit;
 
 @NullMarked
 public final class QuickTransferListener implements Listener {
-    private final JavaPlugin plugin;
-    private final Map<UUID, ClickType> doubleClicks;
+    final DoubleClickListener doubleClickListener;
 
-    public QuickTransferListener(JavaPlugin plugin) {
-        this.plugin = plugin;
-        this.doubleClicks = new ConcurrentHashMap<>();
+    public QuickTransferListener(DoubleClickListener doubleClickListener) {
+        this.doubleClickListener = doubleClickListener;
     }
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
@@ -44,7 +36,7 @@ public final class QuickTransferListener implements Listener {
         if (holder == null) return;
 
         final var clickType = event.getClick();
-        final var doubleClick = isDoubleClick(event);
+        final var doubleClick = doubleClickListener.isDoubleClick(event);
         final var playerInventory = player.getInventory();
 
         final var playerInventorySection = new InventorySection(playerInventory, 9, 35);
@@ -85,22 +77,5 @@ public final class QuickTransferListener implements Listener {
             case CHEST, ENDER_CHEST, SHULKER_BOX, BARREL, DROPPER, DISPENSER, HOPPER -> true;
             default -> false;
         };
-    }
-
-    private boolean isDoubleClick(InventoryClickEvent event) {
-        final var uuid = event.getWhoClicked().getUniqueId();
-        final var click = event.getClick();
-
-        if (doubleClicks.get(uuid) == click) {
-            doubleClicks.remove(uuid);
-            return true;
-        } else {
-            doubleClicks.put(uuid, click);
-            plugin.getServer().getAsyncScheduler().runDelayed(plugin,
-                _ -> doubleClicks.remove(uuid),
-                500L, TimeUnit.MILLISECONDS
-            );
-            return false;
-        }
     }
 }
