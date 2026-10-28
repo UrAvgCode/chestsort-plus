@@ -2,6 +2,8 @@ package com.uravgcode.chestsortplus.listener;
 
 import com.uravgcode.chestsortplus.key.ChestSortKeys;
 import com.uravgcode.chestsortplus.sorter.InventorySorter;
+import org.bukkit.entity.AbstractHorse;
+import org.bukkit.entity.AbstractNautilus;
 import org.bukkit.entity.ChestedHorse;
 import org.bukkit.entity.Llama;
 import org.bukkit.event.EventHandler;
@@ -60,6 +62,7 @@ public final class InventoryListener implements Listener {
                 switch (holder) {
                     case Llama llama -> inventorySorter.sortInventory(inventory, 2, llama.getStrength() * 3 + 1);
                     case ChestedHorse _ -> inventorySorter.sortInventory(inventory, 2, 16);
+                    case AbstractHorse _, AbstractNautilus _ -> {}
                     default -> inventorySorter.sortInventory(inventory);
                 }
                 event.setCancelled(true);
@@ -86,6 +89,7 @@ public final class InventoryListener implements Listener {
                 switch (holder) {
                     case Llama llama -> inventorySorter.sortInventory(inventory, 2, llama.getStrength() * 3 + 1);
                     case ChestedHorse _ -> inventorySorter.sortInventory(inventory, 2, 16);
+                    case AbstractHorse _, AbstractNautilus _ -> {}
                     default -> inventorySorter.sortInventory(inventory);
                 }
             }
