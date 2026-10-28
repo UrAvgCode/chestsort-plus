@@ -1,6 +1,6 @@
 package com.uravgcode.chestsortplus.listener;
 
-import org.bukkit.Material;
+import com.uravgcode.chestsortplus.inventory.InventorySection;
 import org.bukkit.Tag;
 import org.bukkit.entity.ChestedHorse;
 import org.bukkit.entity.Llama;
@@ -13,12 +13,14 @@ import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.jspecify.annotations.NullMarked;
 
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
+@NullMarked
 public final class QuickTransferListener implements Listener {
     private final JavaPlugin plugin;
     private final Map<UUID, ClickType> doubleClicks;
@@ -37,29 +39,33 @@ public final class QuickTransferListener implements Listener {
         if (!event.getCursor().getType().isAir()) return;
 
         final var containerInventory = event.getInventory();
-        if (containerInventory.getHolder() == null) return;
         if (!isSupportedContainer(containerInventory)) return;
+
+        final var holder = containerInventory.getHolder();
+        if (holder == null) return;
 
         final var clickType = event.getClick();
         final var doubleClick = isDoubleClick(event);
         final var playerInventory = player.getInventory();
 
         if (clickType == ClickType.LEFT) {
-            quickTransferPlayerInventory(playerInventory, containerInventory, doubleClick);
+            if (holder instanceof ChestedHorse) {
+                quickTransferToChestedHorse(playerInventory, containerInventory, doubleClick);
+            } else {
+                quickTransferPlayerInventory(playerInventory, containerInventory, doubleClick);
+            }
         } else if (clickType == ClickType.RIGHT) {
             quickTransferContainerInventory(containerInventory, playerInventory, doubleClick);
         }
     }
 
     private void quickTransferPlayerInventory(PlayerInventory playerInventory, Inventory containerInventory, boolean doubleClick) {
-        if (containerInventory.getHolder() instanceof ChestedHorse) return;
         final var isShulkerBox = containerInventory.getType() == InventoryType.SHULKER_BOX;
-
         for (int i = 9; i <= 35; ++i) {
             final var item = playerInventory.getItem(i);
-            if (item == null || item.getType().isAir()) continue;
+            if (item == null || item.isEmpty()) continue;
             if (isShulkerBox && Tag.SHULKER_BOXES.isTagged(item.getType())) continue;
-            if (!doubleClick && !inventoryContains(containerInventory, item.getType())) continue;
+            if (!doubleClick && !containerInventory.contains(item.getType())) continue;
 
             final var remainingItems = containerInventory.addItem(item.clone());
 
@@ -67,6 +73,25 @@ public final class QuickTransferListener implements Listener {
                 playerInventory.clear(i);
             } else {
                 playerInventory.setItem(i, remainingItems.get(0));
+            }
+        }
+    }
+
+    private void quickTransferToChestedHorse(PlayerInventory player, Inventory horseInventory, boolean doubleClick) {
+        final int endSlot = horseInventory.getHolder() instanceof Llama llama ? llama.getStrength() * 3 + 1 : 16;
+        final var inventorySection = new InventorySection(horseInventory, 2, endSlot);
+
+        for (int i = 9; i <= 35; ++i) {
+            final var item = player.getItem(i);
+            if (item == null || item.getType().isAir()) continue;
+            if (!doubleClick && !inventorySection.contains(item.getType())) continue;
+
+            final var remainingItems = inventorySection.addItem(item.clone());
+
+            if (remainingItems.isEmpty()) {
+                player.clear(i);
+            } else {
+                player.setItem(i, remainingItems.get(0));
             }
         }
     }
@@ -83,7 +108,7 @@ public final class QuickTransferListener implements Listener {
         for (int i = startSlot; i <= endSlot; ++i) {
             final var item = containerInventory.getItem(i);
             if (item == null || item.getType().isAir()) continue;
-            if (!doubleClick && !inventoryContains(playerInventory, item.getType())) continue;
+            if (!doubleClick && !playerInventory.contains(item.getType())) continue;
 
             final var remainingItems = playerInventory.addItem(item.clone());
 
@@ -117,14 +142,5 @@ public final class QuickTransferListener implements Listener {
             );
             return false;
         }
-    }
-
-    private boolean inventoryContains(Inventory inventory, Material material) {
-        for (final var item : inventory.getStorageContents()) {
-            if (item != null && item.getType() == material) {
-                return true;
-            }
-        }
-        return false;
     }
 }
