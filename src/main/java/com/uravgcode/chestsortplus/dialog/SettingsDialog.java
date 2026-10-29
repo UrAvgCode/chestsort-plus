@@ -35,7 +35,8 @@ public final class SettingsDialog {
                     enableDialogInput(),
                     keybindDialogInput(),
                     autoChestDialogInput(),
-                    autoInventoryDialogInput()
+                    autoInventoryDialogInput(),
+                    quickTransferDialogInput()
                 ))
                 .build()
             )
@@ -163,16 +164,46 @@ public final class SettingsDialog {
         );
     }
 
+    private DialogInput quickTransferDialogInput() {
+        final var dataContainer = player.getPersistentDataContainer();
+        final var quickTransfer = dataContainer.getOrDefault(
+            ChestSortKeys.QUICK_TRANSFER,
+            PersistentDataType.BOOLEAN,
+            false
+        );
+
+        return DialogInput.singleOption(
+            "quick_transfer",
+            200,
+            List.of(
+                SingleOptionDialogInput.OptionEntry.create(
+                    "enabled",
+                    Component.text("enabled", NamedTextColor.GREEN),
+                    quickTransfer
+                ),
+                SingleOptionDialogInput.OptionEntry.create(
+                    "disabled",
+                    Component.text("disabled", NamedTextColor.RED),
+                    !quickTransfer
+                )
+            ),
+            Component.text("quick transfer"),
+            true
+        );
+    }
+
     private void updateSettings(DialogResponseView response, Audience audience) {
         final var enabled = "enabled".equals(response.getText("chestsort"));
         final var keybind = ClickType.valueOf(response.getText("keybind"));
         final var autoChest = "enabled".equals(response.getText("auto_chest"));
         final var autoInventory = "enabled".equals(response.getText("auto_inventory"));
+        final var quickTransfer = "enabled".equals(response.getText("quick_transfer"));
 
         final var dataContainer = player.getPersistentDataContainer();
         dataContainer.set(ChestSortKeys.ENABLED, PersistentDataType.BOOLEAN, enabled);
         dataContainer.set(ChestSortKeys.KEYBIND, PersistentDataType.STRING, keybind.name());
         dataContainer.set(ChestSortKeys.AUTO_CHEST, PersistentDataType.BOOLEAN, autoChest);
         dataContainer.set(ChestSortKeys.AUTO_INVENTORY, PersistentDataType.BOOLEAN, autoInventory);
+        dataContainer.set(ChestSortKeys.QUICK_TRANSFER, PersistentDataType.BOOLEAN, quickTransfer);
     }
 }

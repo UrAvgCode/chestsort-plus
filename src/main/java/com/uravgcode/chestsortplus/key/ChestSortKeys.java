@@ -10,6 +10,7 @@ public final class ChestSortKeys {
     public static final NamespacedKey KEYBIND = new NamespacedKey(PluginInfo.NAME, "keybind");
     public static final NamespacedKey AUTO_CHEST = new NamespacedKey(PluginInfo.NAME, "auto_chest");
     public static final NamespacedKey AUTO_INVENTORY = new NamespacedKey(PluginInfo.NAME, "auto_inventory");
+    public static final NamespacedKey QUICK_TRANSFER = new NamespacedKey(PluginInfo.NAME, "quick_transfer");
 
     private ChestSortKeys() {
     }
