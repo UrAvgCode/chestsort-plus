@@ -13,8 +13,10 @@ import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickCallback;
 import net.kyori.adventure.text.format.NamedTextColor;
+import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
+import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.jspecify.annotations.NullMarked;
 
@@ -22,21 +24,21 @@ import java.util.List;
 
 @NullMarked
 public final class SettingsDialog {
-    private final Player player;
+    private final PersistentDataContainer dataContainer;
 
     public SettingsDialog(Player player) {
-        this.player = player;
+        this.dataContainer = player.getPersistentDataContainer();
     }
 
     public Dialog create() {
         return Dialog.create(builder -> builder.empty()
             .base(DialogBase.builder(Component.text("Chestsort Settings"))
                 .inputs(List.of(
-                    enableDialogInput(),
+                    booleanInput("chestsort", "chestsort", ChestSortKeys.ENABLED),
                     keybindDialogInput(),
-                    autoChestDialogInput(),
-                    autoInventoryDialogInput(),
-                    quickTransferDialogInput()
+                    booleanInput("auto_chest", "auto-sort chests", ChestSortKeys.AUTO_CHEST),
+                    booleanInput("auto_inventory", "auto-sort inventory", ChestSortKeys.AUTO_INVENTORY),
+                    booleanInput("quick_transfer", "quick transfer", ChestSortKeys.QUICK_TRANSFER)
                 ))
                 .build()
             )
@@ -52,42 +54,30 @@ public final class SettingsDialog {
         );
     }
 
-    private DialogInput enableDialogInput() {
-        final var dataContainer = player.getPersistentDataContainer();
-        final var enabled = dataContainer.getOrDefault(
-            ChestSortKeys.ENABLED,
-            PersistentDataType.BOOLEAN,
-            false
-        );
-
+    private DialogInput booleanInput(String key, String label, NamespacedKey namespacedKey) {
+        final boolean enabled = dataContainer.getOrDefault(namespacedKey, PersistentDataType.BOOLEAN, false);
         return DialogInput.singleOption(
-            "chestsort",
+            key,
             200,
             List.of(
                 SingleOptionDialogInput.OptionEntry.create(
                     "enabled",
-                    Component.text("enabled", NamedTextColor.GREEN),
+                    Component.text("Enabled", NamedTextColor.GREEN),
                     enabled
                 ),
                 SingleOptionDialogInput.OptionEntry.create(
                     "disabled",
-                    Component.text("disabled", NamedTextColor.RED),
+                    Component.text("Disabled", NamedTextColor.RED),
                     !enabled
                 )
             ),
-            Component.text("chestsort"),
+            Component.text(label),
             true
         );
     }
 
     private DialogInput keybindDialogInput() {
-        final var dataContainer = player.getPersistentDataContainer();
-        final var keybind = dataContainer.getOrDefault(
-            ChestSortKeys.KEYBIND,
-            PersistentDataType.STRING,
-            "SHIFT_LEFT"
-        );
-
+        final var keybind = dataContainer.getOrDefault(ChestSortKeys.KEYBIND, PersistentDataType.STRING, "SHIFT_LEFT");
         return DialogInput.singleOption(
             "keybind",
             200,
@@ -108,90 +98,6 @@ public final class SettingsDialog {
         );
     }
 
-    private DialogInput autoChestDialogInput() {
-        final var dataContainer = player.getPersistentDataContainer();
-        final var autoChest = dataContainer.getOrDefault(
-            ChestSortKeys.AUTO_CHEST,
-            PersistentDataType.BOOLEAN,
-            false
-        );
-
-        return DialogInput.singleOption(
-            "auto_chest",
-            200,
-            List.of(
-                SingleOptionDialogInput.OptionEntry.create(
-                    "enabled",
-                    Component.text("enabled", NamedTextColor.GREEN),
-                    autoChest
-                ),
-                SingleOptionDialogInput.OptionEntry.create(
-                    "disabled",
-                    Component.text("disabled", NamedTextColor.RED),
-                    !autoChest
-                )
-            ),
-            Component.text("auto-sort chests"),
-            true
-        );
-    }
-
-    private DialogInput autoInventoryDialogInput() {
-        final var dataContainer = player.getPersistentDataContainer();
-        final var autoInventory = dataContainer.getOrDefault(
-            ChestSortKeys.AUTO_INVENTORY,
-            PersistentDataType.BOOLEAN,
-            false
-        );
-
-        return DialogInput.singleOption(
-            "auto_inventory",
-            200,
-            List.of(
-                SingleOptionDialogInput.OptionEntry.create(
-                    "enabled",
-                    Component.text("enabled", NamedTextColor.GREEN),
-                    autoInventory
-                ),
-                SingleOptionDialogInput.OptionEntry.create(
-                    "disabled",
-                    Component.text("disabled", NamedTextColor.RED),
-                    !autoInventory
-                )
-            ),
-            Component.text("auto-sort inventory"),
-            true
-        );
-    }
-
-    private DialogInput quickTransferDialogInput() {
-        final var dataContainer = player.getPersistentDataContainer();
-        final var quickTransfer = dataContainer.getOrDefault(
-            ChestSortKeys.QUICK_TRANSFER,
-            PersistentDataType.BOOLEAN,
-            false
-        );
-
-        return DialogInput.singleOption(
-            "quick_transfer",
-            200,
-            List.of(
-                SingleOptionDialogInput.OptionEntry.create(
-                    "enabled",
-                    Component.text("enabled", NamedTextColor.GREEN),
-                    quickTransfer
-                ),
-                SingleOptionDialogInput.OptionEntry.create(
-                    "disabled",
-                    Component.text("disabled", NamedTextColor.RED),
-                    !quickTransfer
-                )
-            ),
-            Component.text("quick transfer"),
-            true
-        );
-    }
-
     private void updateSettings(DialogResponseView response, Audience audience) {
         final var enabled = "enabled".equals(response.getText("chestsort"));
         final var keybind = ClickType.valueOf(response.getText("keybind"));
@@ -199,7 +105,6 @@ public final class SettingsDialog {
         final var autoInventory = "enabled".equals(response.getText("auto_inventory"));
         final var quickTransfer = "enabled".equals(response.getText("quick_transfer"));
 
-        final var dataContainer = player.getPersistentDataContainer();
         dataContainer.set(ChestSortKeys.ENABLED, PersistentDataType.BOOLEAN, enabled);
         dataContainer.set(ChestSortKeys.KEYBIND, PersistentDataType.STRING, keybind.name());
         dataContainer.set(ChestSortKeys.AUTO_CHEST, PersistentDataType.BOOLEAN, autoChest);
