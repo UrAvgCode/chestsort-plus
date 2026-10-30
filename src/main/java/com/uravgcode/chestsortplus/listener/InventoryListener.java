@@ -33,7 +33,8 @@ public final class InventoryListener implements Listener {
         if (event.getClick() != keybind) return;
 
         final var clickedItem = event.getCurrentItem();
-        if (clickedItem != null && !clickedItem.getType().isAir()) return;
+        if (clickedItem != null && !clickedItem.isEmpty()) return;
+        if (!event.getCursor().isEmpty()) return;
 
         final var inventory = event.getClickedInventory();
         if (inventory == null) return;

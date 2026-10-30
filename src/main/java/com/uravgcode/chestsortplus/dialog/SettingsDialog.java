@@ -89,8 +89,13 @@ public final class SettingsDialog {
                 ),
                 SingleOptionDialogInput.OptionEntry.create(
                     "SHIFT_RIGHT",
-                    Component.text("shift-right", NamedTextColor.RED),
+                    Component.text("shift-right", NamedTextColor.GREEN),
                     keybind.equals("SHIFT_RIGHT")
+                ),
+                SingleOptionDialogInput.OptionEntry.create(
+                    "DOUBLE_CLICK",
+                    Component.text("double-click", NamedTextColor.GREEN),
+                    keybind.equals("DOUBLE_CLICK")
                 )
             ),
             Component.text("keybind"),
