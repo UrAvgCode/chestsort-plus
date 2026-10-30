@@ -22,6 +22,9 @@ import java.util.List;
 
 @NullMarked
 public final class SettingsDialog {
+    private static final String ON_ID = "on";
+    private static final String OFF_ID = "off";
+
     private final PersistentDataContainer dataContainer;
 
     public SettingsDialog(Player player) {
@@ -30,43 +33,40 @@ public final class SettingsDialog {
 
     public Dialog create() {
         return Dialog.create(builder -> builder.empty()
-            .base(DialogBase.builder(Component.text("Chestsort Settings"))
+            .base(DialogBase.builder(Component.text("Chestsort ").append(Component.translatable("options.title")))
                 .inputs(List.of(
-                    booleanInput("chestsort", "chestsort", SettingsKeys.ENABLED),
+                    booleanInput(SettingsKeys.ENABLED, "Chestsort"),
                     keybindDialogInput(),
-                    booleanInput("auto_chest", "auto-sort chests", SettingsKeys.AUTO_CHEST),
-                    booleanInput("auto_inventory", "auto-sort inventory", SettingsKeys.AUTO_INVENTORY),
-                    booleanInput("quick_transfer", "quick transfer", SettingsKeys.QUICK_TRANSFER)
+                    booleanInput(SettingsKeys.AUTO_CHEST, "Auto Sort Chests"),
+                    booleanInput(SettingsKeys.AUTO_INVENTORY, "Auto Sort Inventory"),
+                    booleanInput(SettingsKeys.QUICK_TRANSFER, "Quick Item Transfer")
                 ))
                 .build()
             )
-            .type(DialogType.confirmation(
-                ActionButton.builder(Component.text("Confirm", NamedTextColor.GREEN))
+            .type(DialogType.notice(
+                ActionButton.builder(Component.translatable("gui.done"))
                     .action(DialogAction.customClick(this::updateSettings, ClickCallback.Options.builder().build()))
-                    .width(100)
-                    .build(),
-                ActionButton.builder(Component.text("Discard", NamedTextColor.RED))
-                    .width(100)
+                    .width(200)
                     .build()
             ))
         );
     }
 
-    private DialogInput booleanInput(String key, String label, NamespacedKey namespacedKey) {
-        final boolean enabled = dataContainer.getOrDefault(namespacedKey, PersistentDataType.BOOLEAN, false);
+    private DialogInput booleanInput(NamespacedKey key, String label) {
+        final boolean initial = dataContainer.getOrDefault(key, PersistentDataType.BOOLEAN, false);
         return DialogInput.singleOption(
-            key,
+            key.value(),
             200,
             List.of(
                 SingleOptionDialogInput.OptionEntry.create(
-                    "enabled",
-                    Component.text("Enabled", NamedTextColor.GREEN),
-                    enabled
+                    ON_ID,
+                    Component.translatable("options.on", NamedTextColor.GREEN),
+                    initial
                 ),
                 SingleOptionDialogInput.OptionEntry.create(
-                    "disabled",
-                    Component.text("Disabled", NamedTextColor.RED),
-                    !enabled
+                    OFF_ID,
+                    Component.translatable("options.off", NamedTextColor.RED),
+                    !initial
                 )
             ),
             Component.text(label),
@@ -77,7 +77,7 @@ public final class SettingsDialog {
     private DialogInput keybindDialogInput() {
         final var keybind = dataContainer.getOrDefault(SettingsKeys.KEYBIND, Keybind.DATA_TYPE, Keybind.DISABLED);
         return DialogInput.singleOption(
-            "keybind",
+            SettingsKeys.KEYBIND.value(),
             200,
             List.of(
                 SingleOptionDialogInput.OptionEntry.create(
@@ -87,36 +87,36 @@ public final class SettingsDialog {
                 ),
                 SingleOptionDialogInput.OptionEntry.create(
                     Keybind.SHIFT_LEFT.name(),
-                    Component.text("shift-left", NamedTextColor.GREEN),
+                    Component.text("Shift + Left Click", NamedTextColor.GREEN),
                     keybind == Keybind.SHIFT_LEFT
                 ),
                 SingleOptionDialogInput.OptionEntry.create(
                     Keybind.SHIFT_RIGHT.name(),
-                    Component.text("shift-right", NamedTextColor.GREEN),
+                    Component.text("Shift + Right Click", NamedTextColor.GREEN),
                     keybind == Keybind.SHIFT_RIGHT
                 ),
                 SingleOptionDialogInput.OptionEntry.create(
                     Keybind.DOUBLE_CLICK.name(),
-                    Component.text("double-click", NamedTextColor.GREEN),
+                    Component.text("Double Click", NamedTextColor.GREEN),
                     keybind == Keybind.DOUBLE_CLICK
                 )
             ),
-            Component.text("keybind"),
+            Component.text("Sorting Keybind"),
             true
         );
     }
 
     private void updateSettings(DialogResponseView response, Audience audience) {
-        final var enabled = "enabled".equals(response.getText("chestsort"));
-        final var keybind = Keybind.valueOf(response.getText("keybind"));
-        final var autoChest = "enabled".equals(response.getText("auto_chest"));
-        final var autoInventory = "enabled".equals(response.getText("auto_inventory"));
-        final var quickTransfer = "enabled".equals(response.getText("quick_transfer"));
+        updateBoolean(response, SettingsKeys.ENABLED);
+        updateBoolean(response, SettingsKeys.AUTO_CHEST);
+        updateBoolean(response, SettingsKeys.AUTO_INVENTORY);
+        updateBoolean(response, SettingsKeys.QUICK_TRANSFER);
 
-        dataContainer.set(SettingsKeys.ENABLED, PersistentDataType.BOOLEAN, enabled);
+        final var keybind = Keybind.valueOf(response.getText(SettingsKeys.KEYBIND.value()));
         dataContainer.set(SettingsKeys.KEYBIND, Keybind.DATA_TYPE, keybind);
-        dataContainer.set(SettingsKeys.AUTO_CHEST, PersistentDataType.BOOLEAN, autoChest);
-        dataContainer.set(SettingsKeys.AUTO_INVENTORY, PersistentDataType.BOOLEAN, autoInventory);
-        dataContainer.set(SettingsKeys.QUICK_TRANSFER, PersistentDataType.BOOLEAN, quickTransfer);
+    }
+
+    private void updateBoolean(DialogResponseView response, NamespacedKey key) {
+        dataContainer.set(key, PersistentDataType.BOOLEAN, ON_ID.equals(response.getText(key.value())));
     }
 }
