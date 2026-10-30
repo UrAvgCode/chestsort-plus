@@ -2,6 +2,7 @@ package com.uravgcode.chestsortplus.listener;
 
 import com.uravgcode.chestsortplus.key.ChestSortKeys;
 import com.uravgcode.chestsortplus.sorter.InventorySorter;
+import keybind.Keybind;
 import org.bukkit.entity.AbstractHorse;
 import org.bukkit.entity.AbstractNautilus;
 import org.bukkit.entity.ChestedHorse;
@@ -9,7 +10,10 @@ import org.bukkit.entity.Llama;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.inventory.*;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.event.inventory.InventoryOpenEvent;
+import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.persistence.PersistentDataType;
 import org.jspecify.annotations.NullMarked;
 
@@ -29,8 +33,8 @@ public final class InventoryListener implements Listener {
         final var dataContainer = player.getPersistentDataContainer();
         if (!dataContainer.getOrDefault(ChestSortKeys.ENABLED, PersistentDataType.BOOLEAN, false)) return;
 
-        final var keybind = dataContainer.getOrDefault(ChestSortKeys.KEYBIND, PersistentDataType.STRING, "NONE");
-        if (keybind.equals("NONE") || event.getClick() != ClickType.valueOf(keybind)) return;
+        final var keybind = dataContainer.getOrDefault(ChestSortKeys.KEYBIND, Keybind.DATA_TYPE, Keybind.DISABLED);
+        if (!keybind.matches(event.getClick())) return;
 
         final var clickedItem = event.getCurrentItem();
         if (clickedItem != null && !clickedItem.isEmpty()) return;

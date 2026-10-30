@@ -9,6 +9,7 @@ import io.papermc.paper.registry.data.dialog.action.DialogAction;
 import io.papermc.paper.registry.data.dialog.input.DialogInput;
 import io.papermc.paper.registry.data.dialog.input.SingleOptionDialogInput;
 import io.papermc.paper.registry.data.dialog.type.DialogType;
+import keybind.Keybind;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickCallback;
@@ -76,35 +77,30 @@ public final class SettingsDialog {
     }
 
     private DialogInput keybindDialogInput() {
-        final var keybind = dataContainer.getOrDefault(
-            ChestSortKeys.KEYBIND,
-            PersistentDataType.STRING,
-            "NONE"
-        );
-
+        final var keybind = dataContainer.getOrDefault(ChestSortKeys.KEYBIND, Keybind.DATA_TYPE, Keybind.DISABLED);
         return DialogInput.singleOption(
             "keybind",
             200,
             List.of(
                 SingleOptionDialogInput.OptionEntry.create(
-                    "NONE",
-                    Component.text("disabled", NamedTextColor.RED),
-                    keybind.equals("NONE")
+                    Keybind.DISABLED.name(),
+                    Component.text("Disabled", NamedTextColor.RED),
+                    keybind == Keybind.DISABLED
                 ),
                 SingleOptionDialogInput.OptionEntry.create(
-                    "SHIFT_LEFT",
+                    Keybind.SHIFT_LEFT.name(),
                     Component.text("shift-left", NamedTextColor.GREEN),
-                    keybind.equals("SHIFT_LEFT")
+                    keybind == Keybind.SHIFT_LEFT
                 ),
                 SingleOptionDialogInput.OptionEntry.create(
-                    "SHIFT_RIGHT",
+                    Keybind.SHIFT_RIGHT.name(),
                     Component.text("shift-right", NamedTextColor.GREEN),
-                    keybind.equals("SHIFT_RIGHT")
+                    keybind == Keybind.SHIFT_RIGHT
                 ),
                 SingleOptionDialogInput.OptionEntry.create(
-                    "DOUBLE_CLICK",
+                    Keybind.DOUBLE_CLICK.name(),
                     Component.text("double-click", NamedTextColor.GREEN),
-                    keybind.equals("DOUBLE_CLICK")
+                    keybind == Keybind.DOUBLE_CLICK
                 )
             ),
             Component.text("keybind"),
@@ -114,13 +110,13 @@ public final class SettingsDialog {
 
     private void updateSettings(DialogResponseView response, Audience audience) {
         final var enabled = "enabled".equals(response.getText("chestsort"));
-        final var keybind = response.getText("keybind");
+        final var keybind = Keybind.valueOf(response.getText("keybind"));
         final var autoChest = "enabled".equals(response.getText("auto_chest"));
         final var autoInventory = "enabled".equals(response.getText("auto_inventory"));
         final var quickTransfer = "enabled".equals(response.getText("quick_transfer"));
 
         dataContainer.set(ChestSortKeys.ENABLED, PersistentDataType.BOOLEAN, enabled);
-        dataContainer.set(ChestSortKeys.KEYBIND, PersistentDataType.STRING, keybind);
+        dataContainer.set(ChestSortKeys.KEYBIND, Keybind.DATA_TYPE, keybind);
         dataContainer.set(ChestSortKeys.AUTO_CHEST, PersistentDataType.BOOLEAN, autoChest);
         dataContainer.set(ChestSortKeys.AUTO_INVENTORY, PersistentDataType.BOOLEAN, autoInventory);
         dataContainer.set(ChestSortKeys.QUICK_TRANSFER, PersistentDataType.BOOLEAN, quickTransfer);
