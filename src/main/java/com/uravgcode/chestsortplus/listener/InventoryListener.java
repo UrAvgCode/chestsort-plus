@@ -29,8 +29,8 @@ public final class InventoryListener implements Listener {
         final var dataContainer = player.getPersistentDataContainer();
         if (!dataContainer.getOrDefault(ChestSortKeys.ENABLED, PersistentDataType.BOOLEAN, false)) return;
 
-        final var keybind = ClickType.valueOf(dataContainer.getOrDefault(ChestSortKeys.KEYBIND, PersistentDataType.STRING, "SHIFT_LEFT"));
-        if (event.getClick() != keybind) return;
+        final var keybind = dataContainer.getOrDefault(ChestSortKeys.KEYBIND, PersistentDataType.STRING, "NONE");
+        if (keybind.equals("NONE") || event.getClick() != ClickType.valueOf(keybind)) return;
 
         final var clickedItem = event.getCurrentItem();
         if (clickedItem != null && !clickedItem.isEmpty()) return;

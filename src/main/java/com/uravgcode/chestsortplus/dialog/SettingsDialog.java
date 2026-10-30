@@ -15,7 +15,6 @@ import net.kyori.adventure.text.event.ClickCallback;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
-import org.bukkit.event.inventory.ClickType;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.jspecify.annotations.NullMarked;
@@ -77,11 +76,21 @@ public final class SettingsDialog {
     }
 
     private DialogInput keybindDialogInput() {
-        final var keybind = dataContainer.getOrDefault(ChestSortKeys.KEYBIND, PersistentDataType.STRING, "SHIFT_LEFT");
+        final var keybind = dataContainer.getOrDefault(
+            ChestSortKeys.KEYBIND,
+            PersistentDataType.STRING,
+            "NONE"
+        );
+
         return DialogInput.singleOption(
             "keybind",
             200,
             List.of(
+                SingleOptionDialogInput.OptionEntry.create(
+                    "NONE",
+                    Component.text("disabled", NamedTextColor.RED),
+                    keybind.equals("NONE")
+                ),
                 SingleOptionDialogInput.OptionEntry.create(
                     "SHIFT_LEFT",
                     Component.text("shift-left", NamedTextColor.GREEN),
@@ -105,13 +114,13 @@ public final class SettingsDialog {
 
     private void updateSettings(DialogResponseView response, Audience audience) {
         final var enabled = "enabled".equals(response.getText("chestsort"));
-        final var keybind = ClickType.valueOf(response.getText("keybind"));
+        final var keybind = response.getText("keybind");
         final var autoChest = "enabled".equals(response.getText("auto_chest"));
         final var autoInventory = "enabled".equals(response.getText("auto_inventory"));
         final var quickTransfer = "enabled".equals(response.getText("quick_transfer"));
 
         dataContainer.set(ChestSortKeys.ENABLED, PersistentDataType.BOOLEAN, enabled);
-        dataContainer.set(ChestSortKeys.KEYBIND, PersistentDataType.STRING, keybind.name());
+        dataContainer.set(ChestSortKeys.KEYBIND, PersistentDataType.STRING, keybind);
         dataContainer.set(ChestSortKeys.AUTO_CHEST, PersistentDataType.BOOLEAN, autoChest);
         dataContainer.set(ChestSortKeys.AUTO_INVENTORY, PersistentDataType.BOOLEAN, autoInventory);
         dataContainer.set(ChestSortKeys.QUICK_TRANSFER, PersistentDataType.BOOLEAN, quickTransfer);
