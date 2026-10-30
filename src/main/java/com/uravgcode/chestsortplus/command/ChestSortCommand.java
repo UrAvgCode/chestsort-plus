@@ -4,7 +4,7 @@ import com.mojang.brigadier.Command;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.tree.LiteralCommandNode;
 import com.uravgcode.chestsortplus.ChestSortPlus;
-import com.uravgcode.chestsortplus.dialog.SettingsDialog;
+import com.uravgcode.chestsortplus.settings.SettingsDialog;
 import com.uravgcode.chestsortplus.update.UpdateChecker;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.Commands;

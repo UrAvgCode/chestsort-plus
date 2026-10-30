@@ -1,6 +1,5 @@
-package com.uravgcode.chestsortplus.dialog;
+package com.uravgcode.chestsortplus.settings;
 
-import com.uravgcode.chestsortplus.key.ChestSortKeys;
 import io.papermc.paper.dialog.Dialog;
 import io.papermc.paper.dialog.DialogResponseView;
 import io.papermc.paper.registry.data.dialog.ActionButton;
@@ -9,7 +8,6 @@ import io.papermc.paper.registry.data.dialog.action.DialogAction;
 import io.papermc.paper.registry.data.dialog.input.DialogInput;
 import io.papermc.paper.registry.data.dialog.input.SingleOptionDialogInput;
 import io.papermc.paper.registry.data.dialog.type.DialogType;
-import keybind.Keybind;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickCallback;
@@ -34,11 +32,11 @@ public final class SettingsDialog {
         return Dialog.create(builder -> builder.empty()
             .base(DialogBase.builder(Component.text("Chestsort Settings"))
                 .inputs(List.of(
-                    booleanInput("chestsort", "chestsort", ChestSortKeys.ENABLED),
+                    booleanInput("chestsort", "chestsort", SettingsKeys.ENABLED),
                     keybindDialogInput(),
-                    booleanInput("auto_chest", "auto-sort chests", ChestSortKeys.AUTO_CHEST),
-                    booleanInput("auto_inventory", "auto-sort inventory", ChestSortKeys.AUTO_INVENTORY),
-                    booleanInput("quick_transfer", "quick transfer", ChestSortKeys.QUICK_TRANSFER)
+                    booleanInput("auto_chest", "auto-sort chests", SettingsKeys.AUTO_CHEST),
+                    booleanInput("auto_inventory", "auto-sort inventory", SettingsKeys.AUTO_INVENTORY),
+                    booleanInput("quick_transfer", "quick transfer", SettingsKeys.QUICK_TRANSFER)
                 ))
                 .build()
             )
@@ -77,7 +75,7 @@ public final class SettingsDialog {
     }
 
     private DialogInput keybindDialogInput() {
-        final var keybind = dataContainer.getOrDefault(ChestSortKeys.KEYBIND, Keybind.DATA_TYPE, Keybind.DISABLED);
+        final var keybind = dataContainer.getOrDefault(SettingsKeys.KEYBIND, Keybind.DATA_TYPE, Keybind.DISABLED);
         return DialogInput.singleOption(
             "keybind",
             200,
@@ -115,10 +113,10 @@ public final class SettingsDialog {
         final var autoInventory = "enabled".equals(response.getText("auto_inventory"));
         final var quickTransfer = "enabled".equals(response.getText("quick_transfer"));
 
-        dataContainer.set(ChestSortKeys.ENABLED, PersistentDataType.BOOLEAN, enabled);
-        dataContainer.set(ChestSortKeys.KEYBIND, Keybind.DATA_TYPE, keybind);
-        dataContainer.set(ChestSortKeys.AUTO_CHEST, PersistentDataType.BOOLEAN, autoChest);
-        dataContainer.set(ChestSortKeys.AUTO_INVENTORY, PersistentDataType.BOOLEAN, autoInventory);
-        dataContainer.set(ChestSortKeys.QUICK_TRANSFER, PersistentDataType.BOOLEAN, quickTransfer);
+        dataContainer.set(SettingsKeys.ENABLED, PersistentDataType.BOOLEAN, enabled);
+        dataContainer.set(SettingsKeys.KEYBIND, Keybind.DATA_TYPE, keybind);
+        dataContainer.set(SettingsKeys.AUTO_CHEST, PersistentDataType.BOOLEAN, autoChest);
+        dataContainer.set(SettingsKeys.AUTO_INVENTORY, PersistentDataType.BOOLEAN, autoInventory);
+        dataContainer.set(SettingsKeys.QUICK_TRANSFER, PersistentDataType.BOOLEAN, quickTransfer);
     }
 }

@@ -1,8 +1,8 @@
 package com.uravgcode.chestsortplus.listener;
 
-import com.uravgcode.chestsortplus.key.ChestSortKeys;
+import com.uravgcode.chestsortplus.settings.SettingsKeys;
 import com.uravgcode.chestsortplus.sorter.InventorySorter;
-import keybind.Keybind;
+import com.uravgcode.chestsortplus.settings.Keybind;
 import org.bukkit.entity.AbstractHorse;
 import org.bukkit.entity.AbstractNautilus;
 import org.bukkit.entity.ChestedHorse;
@@ -31,9 +31,9 @@ public final class InventoryListener implements Listener {
         if (!player.hasPermission("chestsort.use")) return;
 
         final var dataContainer = player.getPersistentDataContainer();
-        if (!dataContainer.getOrDefault(ChestSortKeys.ENABLED, PersistentDataType.BOOLEAN, false)) return;
+        if (!dataContainer.getOrDefault(SettingsKeys.ENABLED, PersistentDataType.BOOLEAN, false)) return;
 
-        final var keybind = dataContainer.getOrDefault(ChestSortKeys.KEYBIND, Keybind.DATA_TYPE, Keybind.DISABLED);
+        final var keybind = dataContainer.getOrDefault(SettingsKeys.KEYBIND, Keybind.DATA_TYPE, Keybind.DISABLED);
         if (!keybind.matches(event.getClick())) return;
 
         final var clickedItem = event.getCurrentItem();
@@ -85,8 +85,8 @@ public final class InventoryListener implements Listener {
         if (holder == null) return;
 
         final var dataContainer = player.getPersistentDataContainer();
-        if (!dataContainer.getOrDefault(ChestSortKeys.ENABLED, PersistentDataType.BOOLEAN, false)) return;
-        if (!dataContainer.getOrDefault(ChestSortKeys.AUTO_CHEST, PersistentDataType.BOOLEAN, false)) return;
+        if (!dataContainer.getOrDefault(SettingsKeys.ENABLED, PersistentDataType.BOOLEAN, false)) return;
+        if (!dataContainer.getOrDefault(SettingsKeys.AUTO_CHEST, PersistentDataType.BOOLEAN, false)) return;
 
         switch (inventory.getType()) {
             case ENDER_CHEST, SHULKER_BOX, BARREL, DROPPER, DISPENSER, HOPPER -> inventorySorter.sortInventory(inventory);
@@ -111,8 +111,8 @@ public final class InventoryListener implements Listener {
         if (inventory.getType() != InventoryType.CRAFTING || holder != player) return;
 
         final var dataContainer = player.getPersistentDataContainer();
-        if (!dataContainer.getOrDefault(ChestSortKeys.ENABLED, PersistentDataType.BOOLEAN, false)) return;
-        if (!dataContainer.getOrDefault(ChestSortKeys.AUTO_INVENTORY, PersistentDataType.BOOLEAN, false)) return;
+        if (!dataContainer.getOrDefault(SettingsKeys.ENABLED, PersistentDataType.BOOLEAN, false)) return;
+        if (!dataContainer.getOrDefault(SettingsKeys.AUTO_INVENTORY, PersistentDataType.BOOLEAN, false)) return;
 
         inventorySorter.sortInventory(player.getInventory(), 9, 35);
     }

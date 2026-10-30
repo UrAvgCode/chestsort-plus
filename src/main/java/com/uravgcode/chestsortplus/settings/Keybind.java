@@ -1,4 +1,4 @@
-package keybind;
+package com.uravgcode.chestsortplus.settings;
 
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.persistence.PersistentDataAdapterContext;

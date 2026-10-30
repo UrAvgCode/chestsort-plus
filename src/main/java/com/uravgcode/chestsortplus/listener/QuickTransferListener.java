@@ -1,7 +1,7 @@
 package com.uravgcode.chestsortplus.listener;
 
 import com.uravgcode.chestsortplus.inventory.InventorySection;
-import com.uravgcode.chestsortplus.key.ChestSortKeys;
+import com.uravgcode.chestsortplus.settings.SettingsKeys;
 import org.bukkit.Tag;
 import org.bukkit.entity.ChestedHorse;
 import org.bukkit.entity.Llama;
@@ -29,8 +29,8 @@ public final class QuickTransferListener implements Listener {
         if (!player.hasPermission("chestsort.use")) return;
 
         final var dataContainer = player.getPersistentDataContainer();
-        if (!dataContainer.getOrDefault(ChestSortKeys.ENABLED, PersistentDataType.BOOLEAN, false)) return;
-        if (!dataContainer.getOrDefault(ChestSortKeys.QUICK_TRANSFER, PersistentDataType.BOOLEAN, false)) return;
+        if (!dataContainer.getOrDefault(SettingsKeys.ENABLED, PersistentDataType.BOOLEAN, false)) return;
+        if (!dataContainer.getOrDefault(SettingsKeys.QUICK_TRANSFER, PersistentDataType.BOOLEAN, false)) return;
 
         if (event.getClickedInventory() != null) return;
         if (!event.getCursor().getType().isAir()) return;
