@@ -54,8 +54,10 @@ public final class QuickTransferListener implements Listener {
 
         if (clickType == ClickType.LEFT) {
             quickTransferInventory(playerInventorySection, containerInventorySection, doubleClick);
+            event.setCancelled(true);
         } else if (clickType == ClickType.RIGHT) {
             quickTransferInventory(containerInventorySection, playerInventorySection, doubleClick);
+            event.setCancelled(true);
         }
     }
 
