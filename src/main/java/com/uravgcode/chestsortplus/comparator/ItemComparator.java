@@ -50,6 +50,11 @@ public final class ItemComparator implements Comparator<ItemStack> {
             if (paintingOrder != 0) return paintingOrder;
         }
 
+        if (o1.getItemMeta() instanceof Damageable meta1 && o2.getItemMeta() instanceof Damageable meta2) {
+            final var durabilityOrder = Integer.compare(meta1.getDamage(), meta2.getDamage());
+            if (durabilityOrder != 0) return durabilityOrder;
+        }
+
         if (o1.getItemMeta() instanceof OminousBottleMeta meta1 && o2.getItemMeta() instanceof OminousBottleMeta meta2) {
             final var amplifier1 = meta1.hasAmplifier() ? meta1.getAmplifier() : 0;
             final var amplifier2 = meta2.hasAmplifier() ? meta2.getAmplifier() : 0;
