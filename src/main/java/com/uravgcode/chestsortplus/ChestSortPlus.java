@@ -13,7 +13,7 @@ import org.jspecify.annotations.Nullable;
 import java.util.Objects;
 
 @NullMarked
-public final class ChestSortPlus extends JavaPlugin {
+public class ChestSortPlus extends JavaPlugin {
     private static @Nullable ChestSortPlus instance = null;
 
     private final ConfigUpdater configUpdater;

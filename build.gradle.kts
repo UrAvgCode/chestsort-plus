@@ -13,6 +13,17 @@ java {
 
 dependencies {
     paperweight.paperDevBundle(libs.versions.paper.api)
+
+    testImplementation(libs.paper.api)
+    testImplementation(libs.mockbukkit)
+
+    testImplementation(platform(libs.junit.bom))
+    testImplementation(libs.junit.jupiter)
+    testRuntimeOnly(libs.junit.platform.launcher)
+}
+
+paperweight {
+    addServerDependencyTo = configurations.named(JavaPlugin.COMPILE_ONLY_CONFIGURATION_NAME).map { setOf(it) }
 }
 
 paperPluginYaml {
@@ -56,7 +67,12 @@ tasks {
         }
     }
 
+    test {
+        useJUnitPlatform()
+    }
+
     runServer {
-        minecraftVersion("26.3")
+        minecraftVersion(libs.versions.minecraft.get())
+        jvmArgs("-Dcom.mojang.eula.agree=true")
     }
 }
