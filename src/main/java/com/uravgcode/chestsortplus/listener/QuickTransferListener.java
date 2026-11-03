@@ -1,8 +1,8 @@
 package com.uravgcode.chestsortplus.listener;
 
 import com.uravgcode.chestsortplus.inventory.InventorySection;
+import com.uravgcode.chestsortplus.inventory.InventoryTransfer;
 import com.uravgcode.chestsortplus.settings.SettingsKeys;
-import org.bukkit.Tag;
 import org.bukkit.entity.ChestedHorse;
 import org.bukkit.entity.Llama;
 import org.bukkit.event.EventHandler;
@@ -10,7 +10,6 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.persistence.PersistentDataType;
 import org.jspecify.annotations.NullMarked;
@@ -53,30 +52,11 @@ public final class QuickTransferListener implements Listener {
         };
 
         if (clickType == ClickType.LEFT) {
-            quickTransferInventory(playerInventorySection, containerInventorySection, doubleClick);
+            InventoryTransfer.quickTransfer(playerInventorySection, containerInventorySection, doubleClick);
             event.setCancelled(true);
         } else if (clickType == ClickType.RIGHT) {
-            quickTransferInventory(containerInventorySection, playerInventorySection, doubleClick);
+            InventoryTransfer.quickTransfer(containerInventorySection, playerInventorySection, doubleClick);
             event.setCancelled(true);
-        }
-    }
-
-    private void quickTransferInventory(InventorySection source, InventorySection target, boolean doubleClick) {
-        final boolean isShulkerBox = target.getType() == InventoryType.SHULKER_BOX;
-
-        for (int i = 0; i < source.getSize(); ++i) {
-            final var item = source.getItem(i);
-            if (item == null || item.isEmpty()) continue;
-            if (isShulkerBox && Tag.SHULKER_BOXES.isTagged(item.getType())) continue;
-            if (!doubleClick && !target.contains(item.getType())) continue;
-
-            final var remainingItems = target.addItem(item.clone());
-
-            if (remainingItems.isEmpty()) {
-                source.clear(i);
-            } else {
-                source.setItem(i, remainingItems.get(0));
-            }
         }
     }
 

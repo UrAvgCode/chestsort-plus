@@ -1,4 +1,4 @@
-package com.uravgcode.chestsortplus.sorter;
+package com.uravgcode.chestsortplus.inventory;
 
 import com.uravgcode.chestsortplus.comparator.ItemComparator;
 import org.bukkit.inventory.Inventory;

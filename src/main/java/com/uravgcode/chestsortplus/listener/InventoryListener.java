@@ -1,8 +1,8 @@
 package com.uravgcode.chestsortplus.listener;
 
-import com.uravgcode.chestsortplus.settings.SettingsKeys;
-import com.uravgcode.chestsortplus.sorter.InventorySorter;
+import com.uravgcode.chestsortplus.inventory.InventorySorter;
 import com.uravgcode.chestsortplus.settings.Keybind;
+import com.uravgcode.chestsortplus.settings.SettingsKeys;
 import org.bukkit.entity.AbstractHorse;
 import org.bukkit.entity.AbstractNautilus;
 import org.bukkit.entity.ChestedHorse;

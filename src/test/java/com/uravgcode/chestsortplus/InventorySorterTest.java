@@ -1,6 +1,6 @@
 package com.uravgcode.chestsortplus;
 
-import com.uravgcode.chestsortplus.sorter.InventorySorter;
+import com.uravgcode.chestsortplus.inventory.InventorySorter;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
