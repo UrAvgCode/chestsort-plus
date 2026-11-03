@@ -1,14 +1,13 @@
 package com.uravgcode.chestsortplus.sorter;
 
 import com.uravgcode.chestsortplus.comparator.ItemComparator;
-import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.jspecify.annotations.NullMarked;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.List;
 
 @NullMarked
 public final class InventorySorter {
@@ -23,32 +22,51 @@ public final class InventorySorter {
     }
 
     public void sortInventory(Inventory inventory, int startSlot, int endSlot) {
-        final var contents = inventory.getContents();
-        final var combined = Bukkit.getServer().createInventory(null, 54);
-
-        for (int i = startSlot; i <= endSlot; ++i) {
-            if (contents[i] != null) {
-                combined.addItem(contents[i]);
-                inventory.clear(i);
-            }
+        if (startSlot < 0 || endSlot >= inventory.getSize() || startSlot > endSlot) {
+            throw new IllegalArgumentException("Invalid inventory slot range");
         }
 
-        final var items = new ArrayList<ItemStack>();
-        for (final var item : combined.getContents()) {
-            if (item == null || item.getType() == Material.AIR) break;
-            items.add(item);
+        final var items = combineStacks(inventory, startSlot, endSlot);
+        items.sort(comparator);
+
+        for (int slot = startSlot; slot <= endSlot; ++slot) {
+            inventory.clear(slot);
         }
 
-        try {
-            items.sort(comparator);
-        } catch (final Exception exception) {
-            exception.printStackTrace();
+        for (int i = 0; i < items.size(); ++i) {
+            inventory.setItem(startSlot + i, items.get(i));
+        }
+    }
+
+    private List<ItemStack> combineStacks(Inventory inventory, int startSlot, int endSlot) {
+        final int maxStackSize = inventory.getMaxStackSize();
+
+        final var stacks = new ArrayList<ItemStack>(endSlot - startSlot + 1);
+        for (int slot = startSlot; slot <= endSlot; ++slot) {
+            final var stack = inventory.getItem(slot);
+            if (stack == null || stack.isEmpty()) continue;
+
+            mergeStack(stacks, stack.clone(), maxStackSize);
         }
 
-        int currentSlot = startSlot;
-        for (final var item : items) {
-            if (currentSlot > endSlot) break;
-            inventory.setItem(currentSlot++, item);
+        return stacks;
+    }
+
+    private void mergeStack(List<ItemStack> stacks, ItemStack stack, int maxStackSize) {
+        for (final var existing : stacks) {
+            if (!existing.isSimilar(stack)) continue;
+
+            final int maxAmount = Math.min(existing.getMaxStackSize(), maxStackSize);
+            final int remainingSpace = maxAmount - existing.getAmount();
+            if (remainingSpace <= 0) continue;
+
+            final int amount = Math.min(remainingSpace, stack.getAmount());
+            existing.add(amount);
+            stack.subtract(amount);
+
+            if (stack.isEmpty()) return;
         }
+
+        stacks.add(stack);
     }
 }
