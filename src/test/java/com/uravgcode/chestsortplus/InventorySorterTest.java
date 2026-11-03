@@ -70,7 +70,7 @@ public final class InventorySorterTest {
         final var inventory = server.createInventory(null, 54);
 
         for (int i = 0; i < inventory.getSize(); ++i) {
-            inventory.setItem(0, ItemStack.of(Material.COBBLESTONE, 64));
+            inventory.setItem(i, ItemStack.of(Material.COBBLESTONE, 64));
         }
 
         final var before = countItems(inventory);
