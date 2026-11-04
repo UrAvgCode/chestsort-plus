@@ -1,0 +1,49 @@
+package com.uravgcode.chestsortplus;
+
+import com.uravgcode.chestsortplus.listener.DoubleClickListener;
+import com.uravgcode.chestsortplus.listener.InventoryListener;
+import com.uravgcode.chestsortplus.listener.QuickTransferListener;
+import com.uravgcode.chestsortplus.update.ConfigUpdater;
+import com.uravgcode.chestsortplus.update.UpdateChecker;
+import org.bukkit.plugin.java.JavaPlugin;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
+
+import java.util.Objects;
+
+@NullMarked
+public class ChestSortPlus extends JavaPlugin {
+    private static @Nullable ChestSortPlus instance = null;
+
+    private final ConfigUpdater configUpdater;
+
+    public static ChestSortPlus instance() {
+        return Objects.requireNonNull(instance, "plugin not initialized");
+    }
+
+    public ChestSortPlus() {
+        this.configUpdater = new ConfigUpdater(this);
+    }
+
+    @Override
+    public void onLoad() {
+        instance = this;
+    }
+
+    @Override
+    public void onEnable() {
+        UpdateChecker.checkForUpdate(getComponentLogger());
+        final var pluginManager = getServer().getPluginManager();
+        final var doubleClickListener = new DoubleClickListener();
+        pluginManager.registerEvents(doubleClickListener, this);
+        pluginManager.registerEvents(new InventoryListener(), this);
+        pluginManager.registerEvents(new QuickTransferListener(doubleClickListener), this);
+        reload();
+    }
+
+    public void reload() {
+        saveDefaultConfig();
+        reloadConfig();
+        configUpdater.updateConfig();
+    }
+}
