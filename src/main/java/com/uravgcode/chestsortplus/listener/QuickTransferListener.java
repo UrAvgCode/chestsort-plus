@@ -32,7 +32,7 @@ public final class QuickTransferListener implements Listener {
         if (!dataContainer.getOrDefault(SettingsKeys.QUICK_TRANSFER, PersistentDataType.BOOLEAN, false)) return;
 
         if (event.getClickedInventory() != null) return;
-        if (!event.getCursor().getType().isAir()) return;
+        if (!event.getCursor().isEmpty()) return;
 
         final var containerInventory = event.getInventory();
         if (!isSupportedContainer(containerInventory)) return;
@@ -44,18 +44,18 @@ public final class QuickTransferListener implements Listener {
         final var doubleClick = doubleClickListener.isDoubleClick(event);
         final var playerInventory = player.getInventory();
 
-        final var playerInventorySection = new InventorySection(playerInventory, 9, 35);
-        final var containerInventorySection = switch (holder) {
+        final var playerStorage = new InventorySection(playerInventory, 9, 35);
+        final var containerStorage = switch (holder) {
             case Llama llama -> new InventorySection(containerInventory, 2, llama.getStrength() * 3 + 1);
             case ChestedHorse _ -> new InventorySection(containerInventory, 2, 16);
-            default -> new InventorySection(containerInventory, 0, containerInventory.getSize() - 1);
+            default -> containerInventory;
         };
 
         if (clickType == ClickType.LEFT) {
-            InventoryTransfer.quickTransfer(playerInventorySection, containerInventorySection, doubleClick);
+            InventoryTransfer.quickTransfer(playerStorage, containerStorage, doubleClick);
             event.setCancelled(true);
         } else if (clickType == ClickType.RIGHT) {
-            InventoryTransfer.quickTransfer(containerInventorySection, playerInventorySection, doubleClick);
+            InventoryTransfer.quickTransfer(containerStorage, playerStorage, doubleClick);
             event.setCancelled(true);
         }
     }

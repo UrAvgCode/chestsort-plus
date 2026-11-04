@@ -2,11 +2,12 @@ package com.uravgcode.chestsortplus.inventory;
 
 import org.bukkit.Tag;
 import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.inventory.Inventory;
 import org.jspecify.annotations.NullMarked;
 
 @NullMarked
 public final class InventoryTransfer {
-    public static void quickTransfer(InventorySection source, InventorySection target, boolean transferAll) {
+    public static void quickTransfer(Inventory source, Inventory target, boolean transferAll) {
         final boolean isShulkerBox = target.getType() == InventoryType.SHULKER_BOX;
 
         for (int i = 0; i < source.getSize(); ++i) {
