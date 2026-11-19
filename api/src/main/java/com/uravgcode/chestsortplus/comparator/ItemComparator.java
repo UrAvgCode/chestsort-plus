@@ -18,7 +18,11 @@ public final class ItemComparator implements Comparator<ItemStack> {
     private final PaintingComparator paintingComparator;
 
     public ItemComparator() {
-        this.materialComparator = new MaterialComparator();
+        this(new MaterialComparator());
+    }
+
+    public ItemComparator(MaterialComparator materialComparator) {
+        this.materialComparator = materialComparator;
         this.enchantmentComparator = new EnchantmentComparator();
         this.potionComparator = new PotionComparator();
         this.instrumentComparator = new InstrumentComparator();

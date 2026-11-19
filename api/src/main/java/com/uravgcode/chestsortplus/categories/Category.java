@@ -7,11 +7,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 @NullMarked
-public abstract class Category {
+public class Category {
     private final String name;
     private final List<Material> materials;
 
-    protected Category(String name, List<String> materials) {
+    public Category(String name, List<String> materials) {
         this.name = name;
         this.materials = new ArrayList<>(materials.size());
         for (final var materialName : materials) {

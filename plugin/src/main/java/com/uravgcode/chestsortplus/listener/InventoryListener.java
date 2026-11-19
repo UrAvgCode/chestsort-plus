@@ -19,10 +19,14 @@ import org.jspecify.annotations.NullMarked;
 
 @NullMarked
 public final class InventoryListener implements Listener {
-    private final InventorySorter inventorySorter;
+    private InventorySorter inventorySorter;
 
     public InventoryListener() {
         this.inventorySorter = new InventorySorter();
+    }
+
+    public void setInventorySorter(InventorySorter inventorySorter) {
+        this.inventorySorter = inventorySorter;
     }
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)

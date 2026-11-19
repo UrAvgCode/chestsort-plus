@@ -14,7 +14,11 @@ public final class InventorySorter {
     private final Comparator<ItemStack> comparator;
 
     public InventorySorter() {
-        this.comparator = new ItemComparator();
+        this(new ItemComparator());
+    }
+
+    public InventorySorter(Comparator<ItemStack> comparator) {
+        this.comparator = comparator;
     }
 
     public void sortInventory(Inventory inventory) {
