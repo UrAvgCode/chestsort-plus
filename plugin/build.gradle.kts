@@ -56,6 +56,7 @@ tasks {
     }
 
     jar {
+        archiveBaseName.set(rootProject.name)
         dependsOn(":api:classes")
         from(project(":api").sourceSets.main.get().output)
     }
