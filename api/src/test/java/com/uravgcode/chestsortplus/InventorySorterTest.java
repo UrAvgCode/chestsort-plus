@@ -9,12 +9,12 @@ import org.jspecify.annotations.NullMarked;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockbukkit.mockbukkit.MockBukkit;
 import org.mockbukkit.mockbukkit.ServerMock;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -22,10 +22,16 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 @NullMarked
 public final class InventorySorterTest {
     private ServerMock server;
+    private Material[] materials;
 
     @BeforeEach
     public void setUp() {
         server = MockBukkit.mock();
+        materials = Arrays.stream(Material.values())
+            .filter(material -> !material.isLegacy())
+            .filter(material -> !material.isAir())
+            .filter(Material::isItem)
+            .toArray(Material[]::new);
     }
 
     @AfterEach
@@ -184,6 +190,26 @@ public final class InventorySorterTest {
         assertEquals(Arrays.asList(firstResult), Arrays.asList(secondResult));
     }
 
+    @ParameterizedTest
+    @ValueSource(ints = {9, 18, 27, 36, 45, 54})
+    void randomizedInventorySorting(final int size) {
+        final var sorter = new InventorySorter();
+
+        for (int occupiedSlots = 0; occupiedSlots <= size; ++occupiedSlots) {
+            for (int i = 0; i < 10; ++i) {
+                final var seed = Objects.hash(size, occupiedSlots, i);
+
+                final var inventory = server.createInventory(null, size);
+                randomizeInventory(inventory, occupiedSlots, seed);
+
+                final var before = countItems(inventory);
+                sorter.sortInventory(inventory);
+                final var after = countItems(inventory);
+                assertEquals(before, after);
+            }
+        }
+    }
+
     private Map<Material, Integer> countItems(Inventory inventory) {
         final var itemCounts = new HashMap<Material, Integer>();
         for (final var item : inventory.getContents()) {
@@ -193,5 +219,26 @@ public final class InventorySorterTest {
         }
 
         return itemCounts;
+    }
+
+    private void randomizeInventory(Inventory inventory, int occupiedSlots, long seed) {
+        final var random = new Random(seed);
+
+        final var slots = new ArrayList<Integer>(inventory.getSize());
+        for (int i = 0; i < inventory.getSize(); ++i) {
+            slots.add(i);
+        }
+
+        Collections.shuffle(slots, random);
+
+        for (int i = 0; i < occupiedSlots; ++i) {
+            final var material = materials[random.nextInt(materials.length)];
+
+            final var maxStackSize = material.getMaxStackSize();
+            final var amount = random.nextInt(maxStackSize) + 1;
+
+            final var item = ItemStack.of(material, amount);
+            inventory.setItem(slots.get(i), item);
+        }
     }
 }
