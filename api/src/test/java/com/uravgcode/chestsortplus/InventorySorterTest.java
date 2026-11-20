@@ -26,7 +26,6 @@ public final class InventorySorterTest {
     @BeforeEach
     public void setUp() {
         server = MockBukkit.mock();
-        //MockBukkit.load(ChestSortPlus.class);
     }
 
     @AfterEach
