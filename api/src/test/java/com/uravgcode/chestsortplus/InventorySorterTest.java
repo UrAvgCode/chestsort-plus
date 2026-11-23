@@ -3,7 +3,6 @@ package com.uravgcode.chestsortplus;
 import com.uravgcode.chestsortplus.inventory.InventorySorter;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.jspecify.annotations.NullMarked;
 import org.junit.jupiter.api.AfterEach;
@@ -14,8 +13,11 @@ import org.junit.jupiter.params.provider.ValueSource;
 import org.mockbukkit.mockbukkit.MockBukkit;
 import org.mockbukkit.mockbukkit.ServerMock;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Objects;
 
+import static com.uravgcode.chestsortplus.util.InventoryTestUtils.countItems;
+import static com.uravgcode.chestsortplus.util.InventoryTestUtils.randomizeInventory;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
@@ -200,45 +202,13 @@ public final class InventorySorterTest {
                 final var seed = Objects.hash(size, occupiedSlots, i);
 
                 final var inventory = server.createInventory(null, size);
-                randomizeInventory(inventory, occupiedSlots, seed);
+                randomizeInventory(inventory, occupiedSlots, materials, seed);
 
                 final var before = countItems(inventory);
                 sorter.sortInventory(inventory);
                 final var after = countItems(inventory);
                 assertEquals(before, after);
             }
-        }
-    }
-
-    private Map<Material, Integer> countItems(Inventory inventory) {
-        final var itemCounts = new HashMap<Material, Integer>();
-        for (final var item : inventory.getContents()) {
-            if (item != null && !item.isEmpty()) {
-                itemCounts.merge(item.getType(), item.getAmount(), Integer::sum);
-            }
-        }
-
-        return itemCounts;
-    }
-
-    private void randomizeInventory(Inventory inventory, int occupiedSlots, long seed) {
-        final var random = new Random(seed);
-
-        final var slots = new ArrayList<Integer>(inventory.getSize());
-        for (int i = 0; i < inventory.getSize(); ++i) {
-            slots.add(i);
-        }
-
-        Collections.shuffle(slots, random);
-
-        for (int i = 0; i < occupiedSlots; ++i) {
-            final var material = materials[random.nextInt(materials.length)];
-
-            final var maxStackSize = material.getMaxStackSize();
-            final var amount = random.nextInt(maxStackSize) + 1;
-
-            final var item = ItemStack.of(material, amount);
-            inventory.setItem(slots.get(i), item);
         }
     }
 }
