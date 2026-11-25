@@ -34,11 +34,18 @@ public final class InventorySorter {
         items.sort(comparator);
 
         for (int slot = startSlot; slot <= endSlot; ++slot) {
-            inventory.clear(slot);
-        }
+            final int index = slot - startSlot;
+            final var current = inventory.getItem(slot);
 
-        for (int i = 0; i < items.size(); ++i) {
-            inventory.setItem(startSlot + i, items.get(i));
+            if (index < items.size()) {
+                final var target = items.get(index);
+
+                if (!target.equals(current)) {
+                    inventory.setItem(slot, target);
+                }
+            } else if (current != null && !current.isEmpty()) {
+                inventory.clear(slot);
+            }
         }
     }
 
