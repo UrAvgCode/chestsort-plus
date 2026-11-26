@@ -34,18 +34,21 @@ public final class ItemComparator implements Comparator<ItemStack> {
         final var materialOrder = materialComparator.compare(o1.getType(), o2.getType());
         if (materialOrder != 0) return materialOrder;
 
-        if (o1.getItemMeta() instanceof EnchantmentStorageMeta meta1 && o2.getItemMeta() instanceof EnchantmentStorageMeta meta2) {
-            final var enchantmentOrder = enchantmentComparator.compare(meta1, meta2);
+        final var meta1 = o1.getItemMeta();
+        final var meta2 = o2.getItemMeta();
+
+        if (meta1 instanceof EnchantmentStorageMeta enchantment1 && meta2 instanceof EnchantmentStorageMeta enchantment2) {
+            final var enchantmentOrder = enchantmentComparator.compare(enchantment1, enchantment2);
             if (enchantmentOrder != 0) return enchantmentOrder;
         }
 
-        if (o1.getItemMeta() instanceof PotionMeta meta1 && o2.getItemMeta() instanceof PotionMeta meta2) {
-            final var potionOrder = potionComparator.compare(meta1.getBasePotionType(), meta2.getBasePotionType());
+        if (meta1 instanceof PotionMeta potion1 && meta2 instanceof PotionMeta potion2) {
+            final var potionOrder = potionComparator.compare(potion1.getBasePotionType(), potion2.getBasePotionType());
             if (potionOrder != 0) return potionOrder;
         }
 
-        if (o1.getItemMeta() instanceof MusicInstrumentMeta meta1 && o2.getItemMeta() instanceof MusicInstrumentMeta meta2) {
-            final var instrumentOrder = instrumentComparator.compare(meta1.getInstrument(), meta2.getInstrument());
+        if (meta1 instanceof MusicInstrumentMeta instrument1 && meta2 instanceof MusicInstrumentMeta instrument2) {
+            final var instrumentOrder = instrumentComparator.compare(instrument1.getInstrument(), instrument2.getInstrument());
             if (instrumentOrder != 0) return instrumentOrder;
         }
 
@@ -54,21 +57,21 @@ public final class ItemComparator implements Comparator<ItemStack> {
             if (paintingOrder != 0) return paintingOrder;
         }
 
-        if (o1.getItemMeta() instanceof Damageable meta1 && o2.getItemMeta() instanceof Damageable meta2) {
-            final var durabilityOrder = Integer.compare(meta1.getDamage(), meta2.getDamage());
+        if (meta1 instanceof Damageable damage1 && meta2 instanceof Damageable damage2) {
+            final var durabilityOrder = Integer.compare(damage1.getDamage(), damage2.getDamage());
             if (durabilityOrder != 0) return durabilityOrder;
         }
 
-        if (o1.getItemMeta() instanceof OminousBottleMeta meta1 && o2.getItemMeta() instanceof OminousBottleMeta meta2) {
-            final var amplifier1 = meta1.hasAmplifier() ? meta1.getAmplifier() : 0;
-            final var amplifier2 = meta2.hasAmplifier() ? meta2.getAmplifier() : 0;
+        if (meta1 instanceof OminousBottleMeta bottle1 && meta2 instanceof OminousBottleMeta bottle2) {
+            final var amplifier1 = bottle1.hasAmplifier() ? bottle1.getAmplifier() : 0;
+            final var amplifier2 = bottle2.hasAmplifier() ? bottle2.getAmplifier() : 0;
             final var ominousOrder = Integer.compare(amplifier1, amplifier2);
             if (ominousOrder != 0) return ominousOrder;
         }
 
-        if (o1.getItemMeta() instanceof FireworkMeta meta1 && o2.getItemMeta() instanceof FireworkMeta meta2) {
-            final var power1 = meta1.hasPower() ? meta1.getPower() : 0;
-            final var power2 = meta2.hasPower() ? meta2.getPower() : 0;
+        if (meta1 instanceof FireworkMeta firework1 && meta2 instanceof FireworkMeta firework2) {
+            final var power1 = firework1.hasPower() ? firework1.getPower() : 0;
+            final var power2 = firework2.hasPower() ? firework2.getPower() : 0;
             final var fireworkOrder = Integer.compare(power1, power2);
             if (fireworkOrder != 0) return fireworkOrder;
         }
