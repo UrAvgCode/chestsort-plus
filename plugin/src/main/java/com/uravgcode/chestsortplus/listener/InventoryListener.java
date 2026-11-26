@@ -69,8 +69,8 @@ public final class InventoryListener implements Listener {
             }
             case CHEST -> {
                 switch (holder) {
-                    case Llama llama -> inventorySorter.sortInventory(inventory, 2, llama.getStrength() * 3 + 1);
-                    case ChestedHorse _ -> inventorySorter.sortInventory(inventory, 2, 16);
+                    case Llama llama when llama.isCarryingChest() -> inventorySorter.sortInventory(inventory, 2, llama.getStrength() * 3 + 1);
+                    case ChestedHorse horse when horse.isCarryingChest() -> inventorySorter.sortInventory(inventory, 2, 16);
                     case AbstractHorse _, AbstractNautilus _ -> {}
                     default -> inventorySorter.sortInventory(inventory);
                 }
@@ -96,8 +96,8 @@ public final class InventoryListener implements Listener {
             case ENDER_CHEST, SHULKER_BOX, BARREL, DROPPER, DISPENSER, HOPPER -> inventorySorter.sortInventory(inventory);
             case CHEST -> {
                 switch (holder) {
-                    case Llama llama -> inventorySorter.sortInventory(inventory, 2, llama.getStrength() * 3 + 1);
-                    case ChestedHorse _ -> inventorySorter.sortInventory(inventory, 2, 16);
+                    case Llama llama when llama.isCarryingChest() -> inventorySorter.sortInventory(inventory, 2, llama.getStrength() * 3 + 1);
+                    case ChestedHorse horse when horse.isCarryingChest() -> inventorySorter.sortInventory(inventory, 2, 16);
                     case AbstractHorse _, AbstractNautilus _ -> {}
                     default -> inventorySorter.sortInventory(inventory);
                 }

@@ -3,6 +3,8 @@ package com.uravgcode.chestsortplus.listener;
 import com.uravgcode.chestsortplus.inventory.InventorySection;
 import com.uravgcode.chestsortplus.inventory.InventoryTransfer;
 import com.uravgcode.chestsortplus.settings.SettingsKeys;
+import org.bukkit.entity.AbstractHorse;
+import org.bukkit.entity.AbstractNautilus;
 import org.bukkit.entity.ChestedHorse;
 import org.bukkit.entity.Llama;
 import org.bukkit.event.EventHandler;
@@ -40,16 +42,17 @@ public final class QuickTransferListener implements Listener {
         final var holder = containerInventory.getHolder();
         if (holder == null) return;
 
-        final var clickType = event.getClick();
-        final var doubleClick = doubleClickListener.isDoubleClick(event);
-        final var playerInventory = player.getInventory();
-
-        final var playerStorage = new InventorySection(playerInventory, 9, 35);
         final var containerStorage = switch (holder) {
-            case Llama llama -> new InventorySection(containerInventory, 2, llama.getStrength() * 3 + 1);
-            case ChestedHorse _ -> new InventorySection(containerInventory, 2, 16);
+            case Llama llama when llama.isCarryingChest() -> new InventorySection(containerInventory, 2, llama.getStrength() * 3 + 1);
+            case ChestedHorse horse when horse.isCarryingChest() -> new InventorySection(containerInventory, 2, 16);
+            case AbstractHorse _, AbstractNautilus _ -> null;
             default -> containerInventory;
         };
+        if (containerStorage == null) return;
+
+        final var clickType = event.getClick();
+        final var doubleClick = doubleClickListener.isDoubleClick(event);
+        final var playerStorage = new InventorySection(player.getInventory(), 9, 35);
 
         if (clickType == ClickType.LEFT) {
             InventoryTransfer.quickTransfer(playerStorage, containerStorage, doubleClick);
