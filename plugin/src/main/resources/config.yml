@@ -8,6 +8,7 @@ config:
 
 categories:
   # load categories from external yaml files
+  # external categories are not automatically updated
   external: false
 
   # the order in which categories are sorted
